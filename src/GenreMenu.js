@@ -1,7 +1,8 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import { ComposerList } from './Classical.js';
-import {Album, AlbumList, TrackList }  from './all.js';
+import { AlbumList }  from './Albums.js';
+import { TrackList } from './Tracks.js';
 import { LMSRequest } from './server.js';
 
 class GenreMenu extends React.Component {
@@ -19,16 +20,15 @@ class GenreMenu extends React.Component {
     }
     
     playSelf () {
-        LMSRequest(["78:7b:8a:bf:cf:ad",["playlist", "loadalbum", '*', '*', this.state.albumSelected]],(r) => {
-            this.play();
-        });
+        this.props.playerInstance.playAlbum(this.state.albumSelected );
     }
 
     play() {
-        LMSRequest(["78:7b:8a:bf:cf:ad",["play"]]);
+        this.props.playerInstance.play();
     }
 
     componentDidMount() {
+
         LMSRequest(["78:7b:8a:bf:cf:ad",["genres", "0", "1000"]], (r) => {
             this.setState({genres:r.result.genres_loop})
         });
@@ -74,6 +74,7 @@ class GenreMenu extends React.Component {
                             genre={this.state.genreSelected} 
                             list={this.state.albums} 
                             clickHandler={this.handleAlbumChange}
+                            playerInstance={this.props.playerInstance} 
                             />
         }
         return (
@@ -84,7 +85,8 @@ class GenreMenu extends React.Component {
                     {view}
                     <hr></hr>
                 <TrackList 
-                    albumID={this.state.albumSelectedID} 
+                    albumID={this.state.albumSelectedID}
+                    playerInstance={this.props.playerInstance} 
                     playSelf={this.playSelf.bind(this)}
                 />
             </div>

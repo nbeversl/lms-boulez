@@ -1,42 +1,49 @@
 import React from 'react';
 import { render } from 'react-dom';
 import Button from '@material-ui/core/Button';
-import { LMSRequest } from './server.js';
 import Select from '@material-ui/core/Select';
+import { Player } from './Player.js';
 import { GenreMenu } from './GenreMenu.js';
-
-class Player {
-    
-    constructor(address) {
-        this.address = address;
-
-        this.play = () => {
-            LMSRequest([this.address,["play"]])
-        }
-        this.pause = () => {
-            LMSRequest([this.address,["pause"]])
-        }
-        this.albums = () => {
-            LMSRequest([this.address,["albums", "0", "1000"]], 
-            function(r) { console.log(r.result.albums_loop); }
-            );
-        }
-        this.genres = () => {
-            LMSRequest([this.address,["genres", "0", "1000"]], 
-            function(r) { console.log(r.result); }
-            );
-        }
-    }
-}
-
-
-var workIMac = new Player("78:7b:8a:bf:cf:ad");
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+import './style.css';
+import { LMSRequest } from './server.js';
 
 class App extends React.Component {
     
+    constructor(props) {
+        super(props);
+        this.state = {
+            serverStatus : null,
+            targetPlayer : null,
+            playerInstance : null,
+        }
+    }
+
+    componentDidMount() {
+        
+        LMSRequest([this.props.mac,["serverstatus", "0","20"]], (response) => {
+            this.setState({playerInstance: new Player( response.result.players_loop[0].playerid) });
+            this.setState({targetPlayer: response.result.players_loop[0].playerid});
+        });
+
+        let statusCheck = setInterval( ()=> {
+            LMSRequest([this.props.mac,["serverstatus", "0","20"]], (response) => {
+                this.setState({serverStatus: response.result});
+                console.log(response.result);
+            });
+        }, 2500);
+    }
+    
+    switchPlayer(e) {
+        this.setState({targetPlayer: e.target.value});
+        this.setState({playerInstance : new Player(e.target.value)});
+    }
+
     render ()  {
         
         return (
+            this.state.serverStatus ?
             <div>    
                 <link
                     rel="stylesheet"
@@ -44,71 +51,77 @@ class App extends React.Component {
                     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
                     crossorigin="anonymous"
                     />
-                <PlayerStatus />
-                <Button onClick={workIMac.play}>
-                    Play
-                </Button>
-                <Button onClick={workIMac.pause}>
-                    Pause
-                </Button>
+                <PlayerSelector 
+                    players={this.state.serverStatus.players_loop} 
+                    selectedPlayer={this.state.targetPlayer}
+                    onSelect={this.switchPlayer.bind(this)}
+                />
+                <PlayerControls player={this.state.playerInstance}/>
                 <hr></hr>
                 <div>
-                    <GenreMenu />
+                    <GenreMenu playerInstance={this.state.playerInstance}/>
                 </div>
                
             </div>
+            :
+            <div> Loading </div>
         );
     }
 }
-class PlayerStatus extends React.Component {
 
-    constructor(props)  {
-        super(props)
-        this.state = {}
-    }
-    componentDidMount() {
-        let statusCheck = setInterval( ()=> {
-            LMSRequest(["78:7b:8a:bf:cf:ad",["serverstatus", "0","10"]], (response) => {
-                this.setState(response)
-                console.log(response);
-            });
-        }, 2500);
-    }
+
+class PlayerSelector extends React.Component {
+    
     render() {
+        
+        var Players = [];
+        Object.keys(this.props.players).forEach( (item) => {
+            Players.push( 
+                <MenuItem value={this.props.players[item].playerid}> 
+                    {this.props.players[item].name}
+                </MenuItem>
+            );
+        });
+       
+       
         return (
-            this.state.result ?
-            <div>
-                Status Here
-                <PlayerSelector players={this.state.result.players_loop} />
+            this.props.selectedPlayer ?
+          <div>
+            <InputLabel id="player-select">Player</InputLabel>
+            <Select                     
+                onChange={(e) => this.props.onSelect(e)}
+                value={this.props.selectedPlayer}>
+                {Players}
+            </Select>
             </div>
             :
-            <div> Loading</div>
+            <div>Waiting</div>
+
         )
     }
 }
 
-class PlayerSelector extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-    render() {
-        var Players = [];
-        Object.keys(this.props.players).forEach( (item) => {
-            Players.push( 
-                <option value={this.props.players[item].playerid}> {this.props.players[item].name}</option>
-            );
-        });
-        return (
-            <Select value={this.props.players[0].playerid}>
-                {Players}
-            </Select>
 
+class PlayerControls extends React.Component {
+    render() {
+        return (
+            this.props.player ?
+            <div>
+                <Button onClick={this.props.player.play}>
+                    Play
+                </Button>
+                <Button onClick={this.props.player.pause}>
+                    Pause
+                </Button>
+            </div>
+            :
+            <div>Waiting</div>
         )
     }
 }
 
 render ( 
-    <App />,
+    <App mac={"78:7b:8a:bf:cf:ad"}/>,
     document.getElementById('target')
 )
 

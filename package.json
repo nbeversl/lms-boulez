@@ -20,10 +20,12 @@
     "@babel/preset-react": "^7.9.4",
     "babel-loader": "^8.1.0",
     "bootstrap": "^4.5.0",
+    "css-loader": "^3.5.3",
     "fs": "0.0.1-security",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "style-loader": "^1.2.1"
   },
   "scripts": {
     "watch": "NODE_ENV=development webpack --watch --mode development",
