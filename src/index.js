@@ -8,6 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import './style.css';
 import { LMSRequest } from './server.js';
+import Slider from '@material-ui/core/Slider';
 
 class App extends React.Component {
     
@@ -17,6 +18,8 @@ class App extends React.Component {
             serverStatus : null,
             targetPlayer : null,
             playerInstance : null,
+            elapsedTime: 0,
+            playerStatus : null,
         }
     }
 
@@ -30,8 +33,13 @@ class App extends React.Component {
         let statusCheck = setInterval( ()=> {
             LMSRequest([this.props.mac,["serverstatus", "0","20"]], (response) => {
                 this.setState({serverStatus: response.result});
-                console.log(response.result);
             });
+            if (this.state.playerInstance) {
+                this.state.playerInstance.PlayerStatus( (r) => {
+                    this.setState({playerStatus: r});
+                });
+            }
+
         }, 2500);
     }
     
@@ -51,17 +59,24 @@ class App extends React.Component {
                     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
                     crossorigin="anonymous"
                     />
-                <PlayerSelector 
-                    players={this.state.serverStatus.players_loop} 
-                    selectedPlayer={this.state.targetPlayer}
-                    onSelect={this.switchPlayer.bind(this)}
-                />
-                <PlayerControls player={this.state.playerInstance}/>
-                <hr></hr>
-                <div>
+                <div className="control-bar">
+                    <div className="control-content">
+                        <PlayerSelector 
+                            players={this.state.serverStatus.players_loop} 
+                            selectedPlayer={this.state.targetPlayer}
+                            onSelect={this.switchPlayer.bind(this)}
+                        />
+                        <PlayerControls 
+                            status={this.state.playerStatus}
+                            player={this.state.playerInstance}
+                        />
+                    </div>
+                </div>
+                <div className="the-rest">
                     <GenreMenu playerInstance={this.state.playerInstance}/>
                 </div>
                
+
             </div>
             :
             <div> Loading </div>
@@ -103,6 +118,11 @@ class PlayerSelector extends React.Component {
 
 
 class PlayerControls extends React.Component {
+    handleSliderChange(e) {
+        const newPlace = e.value;
+        console.log(e);
+        this.props.player.seek( this.props.status.duration / newPlace );
+    }
     render() {
         return (
             this.props.player ?
@@ -113,6 +133,16 @@ class PlayerControls extends React.Component {
                 <Button onClick={this.props.player.pause}>
                     Pause
                 </Button>
+                <Button href="/settings/index.html" target="sc_settings">Settings</Button>
+                <Button href="/html/docs/help.html" target="sc_help">Help</Button>
+                { this.props.status ?
+                    <Slider 
+                        value={Math.floor(this.props.status.time / this.props.status.duration * 100)} 
+                        onChangeCommitted={this.handleSliderChange.bind(this)}
+                    />
+                : <div></div>
+                }
+
             </div>
             :
             <div>Waiting</div>

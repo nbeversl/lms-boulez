@@ -1,23 +1,19 @@
 import Card from 'react-bootstrap/Card';
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import { TrackList } from './Tracks.js';
+import { TrackList , TrackListScrolling } from './Tracks.js';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import Grid from '@material-ui/core/Grid';
+import FlipCard from 'react-png-flipcard';
 
 class AlbumList extends React.Component {
-    constructor(props) {
-        super(props)
-    }
+    
     render() {
-        
+  
         let List = [];
         Object.keys(this.props.list).forEach( (id) =>
             { List.push(
-                <Card key={this.props.list[id].id}>
-                    
-                        <Card.Header>
-                         {this.props.list[id].album}
-                        </Card.Header>
-        
+                <Card key={this.props.list[id].id}>        
                         <Card.Body>
                              <Album 
                                 name={this.props.list[id].album} 
@@ -25,7 +21,10 @@ class AlbumList extends React.Component {
                                 clickHandler={this.props.clickHandler}
                                 art={this.props.list[id].artwork_track_id}
                             />
-                            <TrackList playerInstance={this.props.playerInstance} albumID={this.props.list[id].id}/>
+                            <TrackList 
+                                playerInstance={this.props.playerInstance} 
+                                albumID={this.props.list[id].id}
+                            />
                         </Card.Body>
                               
                 </Card>
@@ -44,24 +43,56 @@ class Album extends React.Component {
     }
     
     render() {
-        const buttonStyle = {
-            display: 'inline-block',
-            width:'45%',
-          };
-        const imageStyle = {
-            width:'500px'
-        }
+   
         return (
             <Button 
-                style={buttonStyle} 
                 value={this.props.name} 
                 onClick={() => this.props.clickHandler(this.props.id, this.props.name)}>
                     
-                <img style ={imageStyle} src={"/music/"+this.props.art+"/cover.jpg"}/>
+                <LazyLoadImage
+                    src={"/music/"+this.props.art+"/cover.jpg"}
+                    width={'100%'}
+                 />
             </Button>
         )
 
     }
 }
 
-export {Album, AlbumList } 
+
+class AlbumGrid extends React.Component {
+    
+    render() {
+      
+        let List = [];
+        Object.keys(this.props.list).forEach( (id) =>
+            { List.push(
+                <FlipCard item xs={3} key={this.props.list[id].id}
+                    
+                    front = {       
+                        <Album 
+                                name={this.props.list[id].album} 
+                                id={this.props.list[id].id}
+                                clickHandler={this.props.clickHandler}
+                                art={this.props.list[id].artwork_track_id}
+                            />
+                    }
+                    back = {
+                        
+                            <TrackListScrolling 
+                            
+                                playerInstance={this.props.playerInstance} 
+                                albumID={this.props.list[id].id}/> 
+
+                    } />
+            )});
+        return (
+            <Grid container spacing={1}>
+                {List}
+            </Grid>
+        )
+    }
+
+
+}
+export {Album, AlbumList, AlbumGrid } 

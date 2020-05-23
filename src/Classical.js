@@ -1,7 +1,7 @@
 import React from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
-
+import { AlbumList , AlbumGrid}  from './Albums.js';
 
 class ComposerList extends React.Component {
     
@@ -18,7 +18,12 @@ class ComposerList extends React.Component {
         var Table = [];
         artists.forEach( (artistName) => { 
             Table.push(
-                <Composer key={artistName} composerName={artistName} albumList={artistList[artistName]}/>     
+                <Composer 
+                    key={artistName} 
+                    composerName={artistName} 
+                    albumList={artistList[artistName]}
+                    playerInstance={this.props.playerInstance}
+                    />     
                 );
         });
              
@@ -42,7 +47,9 @@ class Composer extends React.Component {
                 </Accordion.Toggle>
                 <Accordion.Collapse eventKey={this.props.composerName}>
                     <Card.Body>
-                    <AlbumList  list={this.props.albumList} />
+                    <AlbumGrid
+                        playerInstance={this.props.playerInstance}
+                        list={this.props.albumList} />
                     </Card.Body>
                 </Accordion.Collapse>
             </Card>

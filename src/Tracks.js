@@ -1,7 +1,8 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import ListGroup from 'react-bootstrap/ListGroup';
-import { LMSRequest } from './server.js';
+import Card from 'react-bootstrap/Card';
+import { Scrollbars } from 'react-custom-scrollbars';
+import './style.css';
 
 class TrackList extends React.Component {
     constructor(props) {
@@ -12,37 +13,87 @@ class TrackList extends React.Component {
     }
   
     componentDidMount() {
-        
-        LMSRequest(["78:7b:8a:bf:cf:ad",["titles","0","100","album_id:"+this.props.albumID, "sort:tracknum", "tags:**o**"]],(r) => {
-            if ( r.result.titles_loop ){ this.setState({tracks:r.result.titles_loop}); }
-        });
-    }
+       
+        this.props.playerInstance.getAlbumTracks(this.props.albumID, 
+            (result) => {
+                this.setState({tracks: result});
+            });
+       }
 
     render() {
-        var listStyle = {
-            width:'45%',
-            float:'right',
-        }
-
+        
         let List = [];  
         Object.keys(this.state.tracks).forEach( (number) =>
             { 
                 List.push( 
-                    <ListGroup.Item key={this.state.tracks[number].id}>
+                    <li key={this.state.tracks[number].id}>
                         {this.state.tracks[number].title} ({this.state.tracks[number].type})
                         <Button onClick={() => this.props.playerInstance.playTrack(this.state.tracks[number].id)}>play</Button>
-                    </ListGroup.Item>
+                    </li>
                 );
             });
         return (
             this.state.tracks != [] ? 
-            <ListGroup style={listStyle}>
-                {List}
-            </ListGroup>
+            <div></div>
             :
             <div> Loading </div>
         );
     }
 }
 
-export { TrackList }
+class TrackListScrolling extends React.Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            tracks:[],
+        }
+    }
+  
+    componentDidMount() {
+       
+        this.props.playerInstance.getAlbumTracks(this.props.albumID, 
+            (result) => {
+                this.setState({tracks: result});
+            });
+       }
+
+    render() {
+        
+        let List = [];  
+        Object.keys(this.state.tracks).forEach( (number) =>
+            { 
+                List.push( 
+                    <li key={this.state.tracks[number].id}>                       
+                        <Button 
+                            onClick={ () => 
+                                this.props.playerInstance.playTrackAndContinue(
+                                        this.state.tracks, number)
+                            }>
+                            <span className="track-title"> 
+                                {this.state.tracks[number].title}
+                            </span> 
+                            <div className="codec">
+                                { this.state.tracks[number].type == 'flc' ? 'FLAC'
+                                    : this.state.tracks[number].type }                            
+                            </div>
+                        </Button>
+                    </li>
+                );
+            });
+        return (
+            this.state.tracks != [] ? 
+            <Scrollbars > 
+                <ol className="grid-tracklist">
+                    {List}
+                </ol>
+            </Scrollbars>
+            :
+            <div> Loading </div>
+        );
+    }
+}
+
+
+
+export { TrackList , TrackListScrolling }
