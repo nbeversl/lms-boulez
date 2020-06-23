@@ -5,20 +5,22 @@ class Player {
     constructor(address) {
 
         this.address = address;
+        this.tracks = [];
+        this.playing = null;
 
         this.play = () => {
             LMSRequest([this.address,["play"]])
+            this.playing = true;
         }
 
-        this.pause = () => {
-           
+        this.pause = () => {   
             LMSRequest([this.address,["pause"]], (r) => {
-                console.log(r);
             })
+            this.playing = ! this.playing;
         }
+
         this.playAlbum = (albumTitle) => {
             LMSRequest([this.address,["playlist", "loadalbum", '*', '*', albumTitle]], (r) => {
-                console.log(r);
                 this.play();
             });
         }
@@ -32,28 +34,44 @@ class Player {
             });
 
         }
-        
-        this.playTrackAndContinue = (tracks, startNumber) => { 
-            this.state.tracks = tracks;
-            LMSRequest([this.address,["playlist","clear"]],(r) => {
-                
-                var tracksToAdd = '';
-                for (var i=startNumber; i<tracks.length; i++) {
-                    tracksToAdd += tracks[i].id.toString();
-                    tracksToAdd += ',';
-                    }
-                
-                LMSRequest([this.address,["playlistcontrol", "cmd:add", "track_id:"+tracksToAdd]],(r) => {
-                    LMSRequest([this.address,["play"]]);
-                });
+
+        this.setVolume = (value) => {
+            
+            LMSRequest([this.address,["mixer","volume", value.toString()]],(r) => { 
+
             });
 
         }
 
+        this.playAlbumFromTrackAndContinue = (track, startNumber) => { 
+        
+            var albumTitle = track.album;
+            
+            LMSRequest([this.address,["playlist","clear"]],(r) => {
+                
+                LMSRequest([this.address,["playlist", "loadalbum",'*', '*', albumTitle]], (r) => {
+                  
+                    LMSRequest([this.address,["playlist", "index",'+'+startNumber.toString()]]);
+        
+                });
+            
+            });
+
+        }
+        this.nextTrack = () => {
+            LMSRequest([this.address,["playlist", "index", "+1"]],(r) => {
+            });
+        }
+
+        this.previousTrack = () => {
+            LMSRequest([this.address,["playlist", "index", "-1"]],(r) => {
+            });
+        }
+
         this.PlayerStatus = (callback) => {
-            LMSRequest([this.address,[ "status","0","10","tags:duration,time"]], (r) => {
+
+            LMSRequest([this.address,[ "status","0","10","tags:duration,time,mode"]], (r) => {
                 callback(r.result);              
-                console.log(r.result);              
             });
         }
 
@@ -65,32 +83,10 @@ class Player {
         }
 
         this.seek = (seconds) => {
-            console.log(seconds);
             LMSRequest([this.address,["time", seconds ]]);
 
         }
-        this.getGenres = (callback) => {
-            LMSRequest([this.address,["genres", "0", "1000"]], (r) => {
-                callback(r.result.genres_loop);
-            });
-        }
 
-        this.getAlbumTracks = (albumID, callback) => {
-            LMSRequest([this.address,["titles","0","100","album_id:"+albumID, "sort:tracknum", "tags:**o****d**"]],(r) => {
-                if ( r.result.titles_loop ){ 
-                    callback(r.result.titles_loop )
-                }
-
-            });
-        }
-
-        this.getAlbumsInGenre = (selectedGenre, callback) => {
-
-            LMSRequest([this.address,["albums", "0","1000","genre_id:"+ selectedGenre.toString(),"tags:ljaS" ]], 
-                (r) => {
-                    callback(r.result.albums_loop || [] );
-            });
-        }
     }
 }
 

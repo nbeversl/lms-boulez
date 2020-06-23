@@ -23,6 +23,7 @@ class ComposerList extends React.Component {
                     composerName={artistName} 
                     albumList={artistList[artistName]}
                     playerInstance={this.props.playerInstance}
+                    library={this.props.library}
                     />     
                 );
         });
@@ -49,7 +50,9 @@ class Composer extends React.Component {
                     <Card.Body>
                     <AlbumGrid
                         playerInstance={this.props.playerInstance}
-                        list={this.props.albumList} />
+                        albumList={this.props.albumList} 
+                        library={this.props.library}
+                        />
                     </Card.Body>
                 </Accordion.Collapse>
             </Card>

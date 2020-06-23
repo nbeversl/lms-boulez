@@ -1,6 +1,5 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import Card from 'react-bootstrap/Card';
 import { Scrollbars } from 'react-custom-scrollbars';
 import './style.css';
 
@@ -11,14 +10,6 @@ class TrackList extends React.Component {
             tracks:[]
         }
     }
-  
-    componentDidMount() {
-       
-        this.props.playerInstance.getAlbumTracks(this.props.albumID, 
-            (result) => {
-                this.setState({tracks: result});
-            });
-       }
 
     render() {
         
@@ -34,7 +25,7 @@ class TrackList extends React.Component {
             });
         return (
             this.state.tracks != [] ? 
-            <div></div>
+            <div>{List}</div>
             :
             <div> Loading </div>
         );
@@ -42,48 +33,42 @@ class TrackList extends React.Component {
 }
 
 class TrackListScrolling extends React.Component {
-
-    constructor(props) {
-        super(props)
-        this.state = {
-            tracks:[],
-        }
-    }
   
-    componentDidMount() {
-       
-        this.props.playerInstance.getAlbumTracks(this.props.albumID, 
-            (result) => {
-                this.setState({tracks: result});
-            });
-       }
-
     render() {
         
+        const tracklistStyle = {
+            width: "100%",
+            position:'absolute',
+        }      
         let List = [];  
-        Object.keys(this.state.tracks).forEach( (number) =>
-            { 
+        Object.keys(this.props.tracks).forEach( (trackNumber) =>
+        { 
                 List.push( 
-                    <li key={this.state.tracks[number].id}>                       
+                    <li key={trackNumber}>                       
+                        <span className="track-title"> 
+                                {this.props.tracks[trackNumber].title}
+                        </span> 
+                        <div className="codec">
+                            { this.props.tracks[trackNumber].type == 'flc' ? 'FLAC'
+                                : this.props.tracks[trackNumber].type }                            
+                        </div>
                         <Button 
                             onClick={ () => 
-                                this.props.playerInstance.playTrackAndContinue(
-                                        this.state.tracks, number)
-                            }>
-                            <span className="track-title"> 
-                                {this.state.tracks[number].title}
-                            </span> 
-                            <div className="codec">
-                                { this.state.tracks[number].type == 'flc' ? 'FLAC'
-                                    : this.state.tracks[number].type }                            
-                            </div>
+
+                                this.props.playerInstance.playAlbumFromTrackAndContinue(
+                                    this.props.tracks[trackNumber], trackNumber)
+                                
+                            }>Play
                         </Button>
+                        <a href={"/music/"+this.props.tracks[trackNumber].id+"/download/"}>↓</a>
+                    
+                        
                     </li>
                 );
             });
         return (
-            this.state.tracks != [] ? 
-            <Scrollbars > 
+            this.props.tracks != [] ? 
+            <Scrollbars style={tracklistStyle}> 
                 <ol className="grid-tracklist">
                     {List}
                 </ol>

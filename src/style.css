@@ -1,10 +1,42 @@
 #target, .control-content {
-    max-width:1200px;
+    width:98%;
+    max-width:98%;
     margin: 0 auto;
 }
-
+.player-controls {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width:100%;
+    display: inline-block;
+}
 .grid-tracklist {
     font-size:10px;
+    display:inline-block;
+}
+
+
+/* Album Grid view images and containers */
+
+.album-image {
+    width: 100%;
+    max-width:100%;
+    height: auto;   
+
+}
+.loading-message {
+    width: 300px;
+    margin: auto auto;
+    margin-top:200px;
+    text-align:center;
+
+}
+.loading-text {
+    margin-top:20px;
+    font-size:1.5em;
+
+}
+.album-cover {
+    overflow:hidden;
 }
 .control-bar {
     position:fixed;
@@ -14,13 +46,23 @@
     background-color:rgb(216, 216, 216);
     opacity:.8;
     z-index:20;
+    transition: 0.2s; /* Add a transition effect (when scrolling - and font size is decreased) */
+
 }
 
 .the-rest {
-    margin-top:100px;
+    margin-top:300px;
 }
 .genre-selector {
     margin-bottom:25px;
+    font-size:40px !important;
+}
+button.genre-choice {
+    border:solid;
+    border-color: rgb(179, 177, 177);
+    border-width:1px;
+    margin-left:1em;
+    margin: 5px 5px 5px 0px ;
 }
 .codec {
     color: grey;
@@ -30,10 +72,101 @@
     background: #f3ecec;
     border-radius: 3px;
     margin-left: 5px;
+    display:inline-block
 }
-
+.now-playing-album-title{
+    font-weight: bold;
+}
+.MuiButton-root {
+    min-width:40px !important;
+}
 .track-title {
     font-size: 12px;
     text-transform: none;
     line-height: 12px;
+}
+
+/* Fixes an issue with flipcard not hiding properly in Safari */
+[class*="FlipCard-module_Front"], 
+[class*="FlipCard-module_Back"] {
+    -webkit-backface-visibility:hidden;
+}
+
+.slider-volume {
+    display:inline-block;
+    min-width: 150px;
+    width:30%;
+    margin-left:20px;
+}
+
+
+.now-playing {
+    display:block;
+
+}
+
+.now-playing > img {
+    max-width:150px;
+    float:right;
+    margin-right:20px;
+    margin-bottom:10px;
+
+}
+.now-playing-meta {
+    display:inline-block;
+    max-width:65%;
+}
+.now-playing-album-cover {
+    width:200px;
+    display:inline-block;
+    float:right;
+    transition: 0.2s;
+
+}
+@media only screen and (max-width:500px) {
+    .MuiButton-text.genre-choice {
+        font-size:.3em;
+        }
+    
+       .genre-selector {
+           font-size:50px !important;
+       }
+       .now-playing {
+           font-size:12px;
+           margin-top:1em;
+           width:100%
+       }
+       .now-playing-album-cover {
+           width:100px;
+       }
+       .the-rest {
+           margin-top:300px;
+       }
+       .now-playing > img {
+            max-width:25%;
+            float:right;
+            margin-right:4px;
+         }
+         .slider-volume {
+             width:90%;
+         }
+         .loading-text {
+
+            font-size:5em;
+         }
+      
+
+}
+
+.btn-icon {
+    height:30px;
+}
+.player-selector {
+    display:inline-block;
+    vertical-align: top;
+}
+
+.flip-container {
+    width:100%;
+    height:auto;
 }

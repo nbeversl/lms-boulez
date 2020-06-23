@@ -1,8 +1,9 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import { ComposerList } from './Classical.js';
-import { AlbumList, AlbumGrid }  from './Albums.js';
-import { TrackList } from './Tracks.js';
+import { AlbumGrid }  from './Albums.js';
+import { BPMView } from './views.js';
+
 
 class GenreMenu extends React.Component {
     constructor(props) {
@@ -10,32 +11,19 @@ class GenreMenu extends React.Component {
         this.state = {
             genres : {},
             genreSelected :0,
-            albums: [],
             trackList : [],
             albumSelected : null,
             albumSelectedID : null,
+            view : 'grid',
         }
         this.handleAlbumChange = this.handleAlbumChange.bind(this);
     }
 
-    componentDidMount() {
-        this.props.playerInstance.getGenres( 
-            (result) => {
-                this.setState({genres: result});
-        });
-        
+    handleGenreChange(e) {
+        this.setState({genreSelected: e.currentTarget.value});
+        this.props.library.getAllTitlesforGenre( this.props.library.genres[e.currentTarget.value].id);
     }
 
-    handleGenreChange(e) {
-     
-        this.setState({genreSelected: e.currentTarget.value});
-        var selectedGenre = this.state.genres[e.currentTarget.value].id;
-        this.props.playerInstance.getAlbumsInGenre( selectedGenre, 
-            (result) => {
-                this.setState({albums: result })            
-            });
-       
-    }
     handleAlbumChange(id, name) {
         
         this.props.playerInstance.getAlbumTracks(id, 
@@ -46,44 +34,85 @@ class GenreMenu extends React.Component {
         this.setState({albumSelectedID : id });
     }
 
+    handleViewChange(name) {
+        this.setState({view:name});
+    }
+
+   
+
     render() {
 
         let genresTable = [];
-        Object.keys(this.state.genres).forEach( (index) => { 
+        Object.keys(this.props.library.genres).forEach( (genreName) => { 
             genresTable.push(
-                <Button     
-                    value={index} 
+                <Button   
+                    className={"genre-choice"}  
+                    key={genreName}
+                    value={genreName} 
                     onClick={this.handleGenreChange.bind(this)} 
-                    >
-                    {this.state.genres[index].genre}
+                >
+                    {genreName}
                 </Button>
         )});
-     
-        if (Object.keys(this.state.genres).length  && this.state.genres[this.state.genreSelected].genre == "Classical") {
-            var view = <ComposerList 
-                            albumList={this.state.albums} 
-                            playerInstance={this.props.playerInstance}
+            
+        if ( this.state.genreSelected && this.state.genres ) {
+           
+            switch(this.state.view) {
+
+                case("composer-list"):
+                    var view = <ComposerList 
+                        albumList={this.props.library.genres[this.state.genreSelected].albums} 
+                        playerInstance={this.props.playerInstance}
+                        library={this.props.library}
                         />;
-        } else {
-            var view =  <AlbumGrid 
-                            playerInstance={this.props.playerInstance}
-                            genre={this.state.genreSelected} 
-                            list={this.state.albums} 
-                            clickHandler={this.handleAlbumChange}
-                        />
+                    break;
+                    
+                case('grid'):
+
+                    var view =  <AlbumGrid 
+                                    screenWidth={this.props.screenWidth}
+                                    library={this.props.library}
+                                    albumList={this.props.library.genres[this.state.genreSelected].albums}                 
+                                    genre={this.state.genreSelected} 
+                                    clickHandler={this.handleAlbumChange}
+                                    playerInstance={this.props.playerInstance}
+                                />
+                    break;
+                
+                case('bpm'):
+                   
+                    var view = <BPMView 
+                                library={this.props.library}
+                                playerInstance={this.props.playerInstance}
+                                />
+                    break;
+            }                       
+        
         }
         return (
             <div>
                 <div className='genre-selector'>
                     {genresTable}
-                </div>
-                {view}
-                <TrackList 
-                    albumID={this.state.albumSelectedID}
-                    playerInstance={this.props.playerInstance} 
-                />
+                </div> 
+                <ViewSelector handleChange={this.handleViewChange.bind(this)} />
+                 { this.state.genreSelected ? view : <div></div> }
+              
             </div>
         )
+    }
+}
+
+class ViewSelector extends React.Component {
+    render() {
+
+        return (
+            <div><hr/>
+                <Button onClick={() => this.props.handleChange('grid')}>Album Grid</Button>
+                <Button onClick={() => this.props.handleChange('composer-list')}>Composer List</Button>
+                <Button onClick={() => this.props.handleChange('bpm')}>BPM</Button>
+                <hr/>
+            </div>
+            );
     }
 }
 
