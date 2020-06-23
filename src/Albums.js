@@ -3,9 +3,10 @@ import React from 'react';
 import { TrackList , TrackListScrolling } from './Tracks.js';
 import Grid from '@material-ui/core/Grid';
 import FlipCard from 'react-png-flipcard';
-import Modal from '@material-ui/core/Modal';
+import Dialog from '@material-ui/core/Dialog';
 import Slider from '@material-ui/core/Slider';
 import Button from '@material-ui/core/Button';
+import Zoom from '@material-ui/core/Zoom';
 class AlbumList extends React.Component {
     
     render() {
@@ -62,9 +63,9 @@ class Album extends React.Component {
     handleMouseLeave() {
         this.setState({ flipped : false  });
     }
-    handleOpen() {
-        this.setState({modalOpen : true});
+    handleOpen() {        
         this.getMyTracks();
+        this.setState({modalOpen : true});
     }
     handleClose() {
         this.setState({modalOpen : false});
@@ -72,13 +73,22 @@ class Album extends React.Component {
     render() {   
         
         var modalStyle = {
-            position: 'inherit',
-            width: "100%",
+            //position: 'inherit',
+            width: "300px",
             height:600,
             backgroundColor: 'white',
-            border: '2px solid #000',
+            //border: '2px solid #000',
             //boxShadow: theme.shadows[5],
             //padding: theme.spacing(2, 4, 3),
+        }
+        var backgroundImageStyle = {
+            position: 'absolute', 
+            WebkitFilter: 'blur(10px) saturate(2) opacity(.3)',
+            filter:'blur(10px) saturate(2) opacity(.3)',
+            background: 'url("/music/'+this.props.art+'/cover.jpg") no-repeat fixed top',
+            width:"100%",
+            maxWidth: "100%",
+            height:"800px",
         }
         var buttonStyle = {
             width: this.props.albumWidth,
@@ -124,29 +134,41 @@ class Album extends React.Component {
                                 className={"album-image"}
                             />    
                         </Button>
-                        <Modal
-                            open={this.state.modalOpen}
-                        ><div>
-                            <div style={modalStyle} >
-                            { this.state.tracks ?
-                                <div> 
-                                    <div>
-                                        <Button onClick={this.handleClose.bind(this)}>
-                                            Close
-                                        </Button>
-                                    </div>
-                                    <TrackListScrolling             
-                                        playerInstance={this.props.playerInstance} 
-                                        tracks = {this.state.tracks}
-                                        album = {this.props.id}
-                                    /> 
+                     
+                            <Dialog
+                                TransitionComponent={Zoom}
+                                open={this.state.modalOpen}
+                             >
+                                <div style={modalStyle} >
+                                    { this.state.tracks ?
+                                        <div>
+                                           
+                                                <div>
+                                                    <Button onClick={this.handleClose.bind(this)}>
+                                                        Close
+                                                    </Button>
+                                                </div>
+                                                <div  > 
+                                                    <TrackListScrolling      
+                                                        playerInstance={this.props.playerInstance} 
+                                                        tracks = {this.state.tracks}
+                                                        album = {this.props.id}
+                                                    />
+                                                </div>
+                                                <div style={ backgroundImageStyle } />    
+                                        </div>
+        
+                                            
+                                    
+                                        
+                                        :
+                                        <div>hang on ...</div>
+                                    }
+                                
                                 </div>
-                                :
-                                <div>hang on ...</div>
-                            }
-                            </div>
-                            </div>
-                        </Modal>
+                                
+                            </Dialog>
+                  
                 </div>
                 }
             </div>

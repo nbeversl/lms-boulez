@@ -39,6 +39,7 @@ class TrackListScrolling extends React.Component {
         const tracklistStyle = {
             width: "100%",
             position:'absolute',
+            zIndex:"100",
         }      
         let List = [];  
         Object.keys(this.props.tracks).forEach( (trackNumber) =>

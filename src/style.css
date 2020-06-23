@@ -12,6 +12,7 @@
 .grid-tracklist {
     font-size:10px;
     display:inline-block;
+    z-index:100;
 }
 
 
@@ -38,20 +39,9 @@
 .album-cover {
     overflow:hidden;
 }
-.control-bar {
-    position:fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color:rgb(216, 216, 216);
-    opacity:.8;
-    z-index:20;
-    transition: 0.2s; /* Add a transition effect (when scrolling - and font size is decreased) */
-
-}
 
 .the-rest {
-    margin-top:300px;
+    margin-top:10px;
 }
 .genre-selector {
     margin-bottom:25px;
@@ -59,6 +49,7 @@
 }
 button.genre-choice {
     border:solid;
+   
     border-color: rgb(179, 177, 177);
     border-width:1px;
     margin-left:1em;
@@ -123,9 +114,12 @@ button.genre-choice {
     transition: 0.2s;
 
 }
+.track-list-dialog{
+    z-index:100;
+}
 @media only screen and (max-width:500px) {
     .MuiButton-text.genre-choice {
-        font-size:.3em;
+        font-size:.2em;
         }
     
        .genre-selector {
@@ -140,7 +134,7 @@ button.genre-choice {
            width:100px;
        }
        .the-rest {
-           margin-top:300px;
+           /* margin-top:300px; */
        }
        .now-playing > img {
             max-width:25%;

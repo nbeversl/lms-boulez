@@ -5,6 +5,9 @@
   "main": "first-file.js",
   "dependencies": {
     "@material-ui/core": "^4.10.0",
+    "@types/jest": "^26.0.0",
+    "@types/node": "^14.0.13",
+    "@types/react-dom": "^16.9.8",
     "amplitudejs": "^5.1.0",
     "classnames": "^2.2.6",
     "install": "^0.13.0",
@@ -21,6 +24,7 @@
     "simple-jsonrpc-js": "^1.0.1",
     "squeezenode": "^0.1.0",
     "tls": "0.0.1",
+    "typescript": "^3.9.5",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   },
