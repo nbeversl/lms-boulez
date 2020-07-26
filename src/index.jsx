@@ -1,19 +1,19 @@
-import React from 'react';
+import * as React from "react";
 import { render } from 'react-dom';
-import { Player } from './Player.js';
-import { GenreMenu } from './GenreMenu.js';
+import { Player } from './Player';
+import { GenreMenu } from './GenreMenu';
 import './style.css';
-import { LMSRequest } from './server.js';
-import { PlayerControls } from './PlayerControls.js';
-import { LMSLibrary } from './Library.js';
+import { LMSRequest } from './server';
+import { PlayerControls } from './PlayerControls';
+import { LMSLibrary } from './Library';
 import Slider from '@material-ui/core/Slider';
-import { Yamaha } from './Yamaha.js';
-import { BrowserPlayer } from './BrowserPlayer.js';
+import { Yamaha } from './Yamaha';
+import { BrowserPlayer } from './BrowserPlayer';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Album } from './Albums.js';
+import { Album } from './Albums';
 import ScrollUpButton from "react-scroll-up-button";
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import Button from '@material-ui/core/Button';
+
 class App extends React.Component {
     
     constructor(props) {
@@ -29,7 +29,7 @@ class App extends React.Component {
             fullscreen: false,
             lastScrollTop :0,
             screenWidth: 500,           
-            drawer:true,
+            drawer:false,
             drawerVariant : 'permanent',
         }
 
@@ -41,13 +41,11 @@ class App extends React.Component {
         this.updateWindowDimensions();
 
         LMSRequest(["",["serverstatus", "0","20"]], (response) => {
-            //this.setState({playerInstance: new Player( response.result.players_loop[0].playerid) });
-            //this.setState({targetPlayer: response.result.players_loop[0].playerid});
-            this.setState({serverStatus: response.result});
+           this.setState({serverStatus: response.result});
 
         });
 
-          let statusCheck = setInterval( ()=> {
+        let statusCheck = setInterval( ()=> {
 
             if ( this.state.targetPlayer == 'browser') { 
                 this.setState({
@@ -70,23 +68,9 @@ class App extends React.Component {
                     });
                 });
             }
-
-            
         }, 5000);
 
         this.setState({library : new LMSLibrary() });
-        
-        // window.addEventListener("scroll", () => { 
-        //     var st = window.pageYOffset || document.documentElement.scrollTop;
-        //     var cover = document.getElementsByClassName("now-playing-album-cover");
-        //     if (st > this.state.lastScrollTop){
-        //         document.getElementsByClassName("now-playing")[0].style.opacity = "0";
-        //     } else {
-        //         document.getElementsByClassName("now-playing")[0].style.opacity = "1";
-        //     }
-        //     this.setState({lastScrollTop : st <= 0 ? 0 : st}); // For Mobile or negative scrolling
-        //     }, false);
-
         window.addEventListener('resize', this.updateWindowDimensions );
             
     }
@@ -116,14 +100,34 @@ class App extends React.Component {
         } else {
             var newPlayer = new BrowserPlayer(this.state.serverStatus.players_loop[0].playerid);
         }
-
         this.setState({
             targetPlayer: e.target.value,
             playerInstance : newPlayer,
         });
+        const playerChanged = new Event('playerChanged');
        
     }
     
+    checkPlayerInstance(callback) {
+        if (! this.state.playerInstance) {
+            this.setState({drawer: true });
+            this.waitForPlayerInstance(callback);
+        } else {
+            callback();
+        }
+    }
+
+    waitForPlayerInstance(callback) {  
+        setTimeout( () => {
+            if ( ! this.state.drawer )  { return }
+            if ( this.state.playerInstance) {
+                callback();
+            } else {
+                this.waitForPlayerInstance(callback);
+            }
+        }, 200);
+    }
+
     handleSeekChange (event, newValue)  {
         this.state.playerInstance.seek( this.state.playerStatus.duration * newValue / 100 );
         this.setState({seek:newValue})
@@ -133,16 +137,17 @@ class App extends React.Component {
         this.setState({volume:newValue});
         this.state.playerInstance.setVolume( newValue );
     }
+
     toggleDrawer (anchor, open) {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
           return;
         }
-        console.log('asdfasdfasd');
         this.setState({drawer: open });
       };
+    
+   
 
-    render ()  {
-          
+    render ()  {      
         return (
             this.state.serverStatus ?
                 <div>
@@ -182,7 +187,7 @@ class App extends React.Component {
                                     <div></div>
                                 }
                             
-                                { this.state.playerStatus && this.state.playerStatus.playlist_loop  && this.state.playerStatus.playlist_loop[this.state.playerStatus.playlist_cur_index] ? 
+                                { this.state.playerStatus && this.state.playerStatus.playlist_loop && this.state.playerStatus.playlist_loop[this.state.playerStatus.playlist_cur_index] ? 
                                     <div className="now-playing">
                                         <div className="now-playing-meta">
                                             <div className="now-playing-artist">{this.state.playerStatus.playlist_loop[this.state.playerStatus.playlist_cur_index].artist}</div>
@@ -196,11 +201,12 @@ class App extends React.Component {
 
                                         <div className="now-playing-album-cover">
                                             <Album
-                                            id={this.state.playerStatus.playlist_loop[this.state.playerStatus.playlist_cur_index].album_id}
-                                            art={this.state.playerStatus.playlist_loop[this.state.playerStatus.playlist_cur_index].artwork_track_id}
-                                            library={this.state.library}
-                                            modal={true}
-                                            playerInstance={this.state.playerInstance}
+                                                id={this.state.playerStatus.playlist_loop[this.state.playerStatus.playlist_cur_index].album_id}
+                                                art={this.state.playerStatus.playlist_loop[this.state.playerStatus.playlist_cur_index].artwork_track_id}
+                                                library={this.state.library}
+                                                modal={true}
+                                                playerInstance={this.state.playerInstance}
+                                                checkPlayerInstance={this.checkPlayerInstance.bind(this)}
                                             />
                                         </div>   
                                     </div>
@@ -211,14 +217,19 @@ class App extends React.Component {
                         </div>
                     </SwipeableDrawer>   
 
-                    {/* <ScrollUpButton /> */}
-                    
-                    <div className="the-rest">
-                        <GenreMenu 
-                            screenWidth={this.state.screenWidth}
-                            playerInstance={this.state.playerInstance}
-                            library={this.state.library} />
-                    </div>
+                    <ScrollUpButton /> 
+                    { this.state.library.genres ?
+                        <div className="the-rest">
+                            <GenreMenu 
+                                screenWidth={this.state.screenWidth}
+                                playerInstance={this.state.playerInstance}
+                                library={this.state.library} 
+                                showDrawer={() => { this.toggleDrawer('top', true)} }
+                                checkPlayerInstance={this.checkPlayerInstance.bind(this)}
+                            />
+                        </div>
+                    : <div></div>
+                    }
                           
                 </div>
                      
@@ -243,6 +254,7 @@ class YamahaStereo extends React.Component {
     setInput(input) {
         this.state.instance.setInput(input);
     }
+
     render() {
        
         return (    

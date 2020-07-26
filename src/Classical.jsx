@@ -1,7 +1,8 @@
-import React from 'react';
+import * as React from "react";
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
-import { AlbumList , AlbumGrid}  from './Albums.js';
+import { AlbumGrid }  from './Albums';
+import  { TrackWithSourceAlbum  } from './Tracks';
 
 class ComposerList extends React.Component {
     
@@ -23,6 +24,7 @@ class ComposerList extends React.Component {
                     composerName={artistName} 
                     albumList={artistList[artistName]}
                     playerInstance={this.props.playerInstance}
+                    checkPlayerInstance={this.props.checkPlayerInstance}
                     library={this.props.library}
                     />     
                 );
@@ -52,6 +54,7 @@ class Composer extends React.Component {
                         playerInstance={this.props.playerInstance}
                         albumList={this.props.albumList} 
                         library={this.props.library}
+                        checkPlayerInstance={this.props.checkPlayerInstance}
                         />
                     </Card.Body>
                 </Accordion.Collapse>
@@ -61,4 +64,44 @@ class Composer extends React.Component {
 
 }
 
-export { Composer, ComposerList }
+class ArtistListWithTracks extends React.Component {
+    
+    constructor(props) {
+        this.state = {
+            tracks :[]
+        }
+    }
+
+    componentDidUpdate () {
+       
+        this.props.artists.forEach( (artist) => {
+            this.props.library.searchTracksByArtist( artist.id, (result) => {
+                if (result) {
+                    result.forEach( (track) => {
+                        var currentTracks = this.state.tracks;
+                        if ( ! currentTracks.includes(track) ) {
+                            currentTracks.push(result);
+                            this.setState({tracks: currentTracks});
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    render() {
+        var Table = [];
+        this.state.tracks.forEach( (track) => {
+            Table.push(track.title);
+        });     
+        return( 
+            <div>
+                HERE IS THE ARTIST LIST
+                {Table}
+            </div>
+        )
+    }
+
+}
+
+export { Composer, ComposerList, ArtistListWithTracks }

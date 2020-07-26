@@ -4,10 +4,13 @@
   "description": "stereo project",
   "main": "first-file.js",
   "dependencies": {
-    "@material-ui/core": "^4.10.0",
+    "@material-ui/core": "^4.11.0",
     "@types/jest": "^26.0.0",
+    "@types/material-ui": "^0.21.7",
     "@types/node": "^14.0.13",
+    "@types/react": "^16.9.38",
     "@types/react-dom": "^16.9.8",
+    "@types/react-router-dom": "^5.1.5",
     "amplitudejs": "^5.1.0",
     "classnames": "^2.2.6",
     "install": "^0.13.0",
@@ -24,7 +27,6 @@
     "simple-jsonrpc-js": "^1.0.1",
     "squeezenode": "^0.1.0",
     "tls": "0.0.1",
-    "typescript": "^3.9.5",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   },
@@ -48,9 +50,12 @@
     "react-dom": "^16.13.1",
     "react-howler": "^3.7.4",
     "react-lazy-load-image-component": "^1.4.3",
+    "source-map-loader": "^1.0.0",
     "strtok3": "^6.0.0",
     "style-loader": "^1.2.1",
     "token-types": "^2.0.0",
+    "ts-loader": "^7.0.5",
+    "typescript": "^3.9.5",
     "yamaha-nodejs": "^0.9.6"
   },
   "scripts": {

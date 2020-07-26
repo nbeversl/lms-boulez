@@ -4,22 +4,26 @@ module.exports = {
     node : {
         fs: 'empty'
     },
-    entry: "./src/index.js",
+    entry: "./src/index.jsx",
     output: {
         filename: "main.js",
         path : "/Volumes/Mac\ Mini\ SSD/Library/PreferencePanes/Squeezebox.prefPane/Contents/server/HTML/Nate/",
         //path: path.resolve(__dirname, "dist")
     },
+    resolve: {
+        // changed from extensions: [".js", ".jsx"]
+        extensions: [".ts", ".tsx", ".js", ".jsx"]
+    },
 
     module  : {
         rules: [
             { 
-                test: /\.js$/,
+                test: /\.(t|j)sx?$/, 
                 exclude:  /(node_modules)/,
                 use: {
-                    loader: 'babel-loader',
+                    loader: 'ts-loader',
                     options: {
-                        presets : ['@babel/preset-env', '@babel/preset-react']
+                        //presets : ['@babel/preset-env', '@babel/preset-react']
                     }
                 }
             },
@@ -30,6 +34,13 @@ module.exports = {
                     { loader: 'css-loader'},
                 ]
             },
+            { 
+                enforce: "pre", 
+                test: /\.js$/, 
+                exclude: /node_modules/, 
+                loader: "source-map-loader" }
+
         ]
-    }
+    },
+    devtool: "source-map"
 }

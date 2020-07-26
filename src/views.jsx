@@ -1,5 +1,6 @@
-import React from 'react';
+import * as React from "react";
 import Button from '@material-ui/core/Button';
+import { clear } from "console";
 
 class BPMView extends React.Component {
     constructor(props) {
@@ -28,7 +29,6 @@ class BPMView extends React.Component {
 
     }
     handleBPMChange (bpm) {
-        console.log(bpm);
         this.setState({selection: bpm})
     }
     render() {

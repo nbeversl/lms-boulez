@@ -1,12 +1,13 @@
 import Card from 'react-bootstrap/Card';
-import React from 'react';
-import { TrackList , TrackListScrolling } from './Tracks.js';
+import * as React from "react";
+import { TrackList , TrackListScrolling } from './Tracks';
 import Grid from '@material-ui/core/Grid';
 import FlipCard from 'react-png-flipcard';
 import Dialog from '@material-ui/core/Dialog';
 import Slider from '@material-ui/core/Slider';
 import Button from '@material-ui/core/Button';
 import Zoom from '@material-ui/core/Zoom';
+
 class AlbumList extends React.Component {
     
     render() {
@@ -21,11 +22,13 @@ class AlbumList extends React.Component {
                                 id={this.props.list[id].id}
                                 clickHandler={this.props.clickHandler}
                                 art={this.props.list[id].artwork_track_id}
+                                checkPlayerInstance={this.props.checkPlayerInstance}
                             />
                             <TrackList 
                                 playerInstance={this.props.playerInstance} 
                                 albumID={this.props.list[id].id}
                                 library={this.props.library}
+                                checkPlayerInstance={this.props.checkPlayerInstance}
                             />
                         </Card.Body>
                               
@@ -33,6 +36,7 @@ class AlbumList extends React.Component {
             )});
         return (
             <div>
+            
                 {List}
             </div>
         )
@@ -47,10 +51,8 @@ class Album extends React.Component {
             flipped : false,
             modalOpen : false,
             dimensions : 300,
-            modalOpen : false,
-        }; 
+        };
     }
-
     getMyTracks() {
         this.props.library.getAlbumTracks(this.props.id, (result) => {
             this.setState({
@@ -59,7 +61,6 @@ class Album extends React.Component {
             this.setState({flipped : true, modalOpen: true});
         });
     }
-    
     handleMouseLeave() {
         this.setState({ flipped : false  });
     }
@@ -70,11 +71,12 @@ class Album extends React.Component {
     handleClose() {
         this.setState({modalOpen : false});
     }
+
     render() {   
-        
+
         var modalStyle = {
             //position: 'inherit',
-            width: "300px",
+            width: "600px",
             height:600,
             backgroundColor: 'white',
             //border: '2px solid #000',
@@ -96,7 +98,7 @@ class Album extends React.Component {
         }
         return (
             <div>
-                { this.props.screenWidth > 600 && this.props.modal != true ? 
+                {/* { this.props.screenWidth > 600 && this.props.modal != true ? 
                     <div className="album-cover" onMouseLeave={this.handleMouseLeave.bind(this)} >
                         <FlipCard  
                             width={this.props.albumWidth}
@@ -126,51 +128,41 @@ class Album extends React.Component {
                         </FlipCard>
 
                     </div>
-                :
-                    <div style={buttonStyle}>                    
-                        <Button onClick={this.handleOpen.bind(this)}>
-                            <img
-                                src={"/music/"+this.props.art+"/cover.jpg"}
-                                className={"album-image"}
-                            />    
-                        </Button>
-                     
-                            <Dialog
-                                TransitionComponent={Zoom}
-                                open={this.state.modalOpen}
-                             >
-                                <div style={modalStyle} >
-                                    { this.state.tracks ?
+                : */}
+                <div style={buttonStyle}>                    
+                    <Button onClick={this.handleOpen.bind(this)}>
+                        <img
+                            src={"/music/"+this.props.art+"/cover.jpg"}
+                            className={"album-image"}
+                        />    
+                    </Button>
+                        <Dialog
+                            TransitionComponent={Zoom}
+                            open={this.state.modalOpen}>
+                            <div style={modalStyle} >
+                                { this.state.tracks ?
+                                    <div>
                                         <div>
-                                           
-                                                <div>
-                                                    <Button onClick={this.handleClose.bind(this)}>
-                                                        Close
-                                                    </Button>
-                                                </div>
-                                                <div  > 
-                                                    <TrackListScrolling      
-                                                        playerInstance={this.props.playerInstance} 
-                                                        tracks = {this.state.tracks}
-                                                        album = {this.props.id}
-                                                    />
-                                                </div>
-                                                <div style={ backgroundImageStyle } />    
+                                            <Button onClick={this.handleClose.bind(this)}>
+                                                Close
+                                            </Button>
                                         </div>
-        
-                                            
-                                    
-                                        
-                                        :
-                                        <div>hang on ...</div>
-                                    }
-                                
-                                </div>
-                                
-                            </Dialog>
-                  
+                                        <div  > 
+                                            <TrackListScrolling      
+                                                playerInstance={this.props.playerInstance} 
+                                                tracks = {this.state.tracks}
+                                                album = {this.props.id}
+                                                checkPlayerInstance={this.props.checkPlayerInstance}
+                                            />
+                                        </div>
+                                        <div style={ backgroundImageStyle } />    
+                                    </div>                                        
+                                    :
+                                    <div>hang on ...</div>
+                                }                                
+                            </div>
+                        </Dialog>
                 </div>
-                }
             </div>
         )
     }
@@ -180,7 +172,6 @@ class Album extends React.Component {
 class AlbumGrid extends React.Component {
     constructor(props) {
         super(props)
-        console.log(this.props.screenWidth);
         this.state = {
             albumWidth: this.props.screenWidth > 600 ? 300 : 90,
         }
@@ -191,11 +182,12 @@ class AlbumGrid extends React.Component {
     }
 
     render() {
-       
         let List = [];
         this.props.albumList.forEach( (album) =>
-
-            { List.push(
+            { 
+                        
+            List.push(
+                
                 <Grid item  key={album.id}>
                     <Album  
                         screenWidth={this.props.screenWidth}
@@ -205,12 +197,14 @@ class AlbumGrid extends React.Component {
                         art={album.artwork_track_id}
                         library={this.props.library}
                         playerInstance={this.props.playerInstance}
-                        />
+                        checkPlayerInstance={this.props.checkPlayerInstance}
+                    />
                 </Grid>
             )});
         return (
             <div>
-                <Slider min={40} max={300} defaultValue={this.state.albumWidth}  onChange={this.adjustWidth.bind(this)} />
+                <a name="albums"></a><h2>Albums</h2>
+                <Slider min={40} max={300} defaultValue={this.props.screenWidth > 600 ? 300 : 90}  onChange={this.adjustWidth.bind(this)} />
                 
                 <Grid 
                     container 

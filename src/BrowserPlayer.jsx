@@ -1,5 +1,5 @@
 import { Howl } from 'howler';
-import { LMSRequest } from './server.js';
+import { LMSRequest } from './server';
 
 class BrowserPlayer {
     constructor(proxyAddress) {
@@ -32,9 +32,6 @@ class BrowserPlayer {
         
             LMSRequest([this.address,["playlist","clear"]],(r) => {
                 LMSRequest([this.address,["playlistcontrol", "cmd:add", "track_id:"+id.toString()]],(r) => {
-
-                    console.log(r);
-                    
                 });
             });
 

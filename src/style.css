@@ -15,14 +15,13 @@
     z-index:100;
 }
 
-
 /* Album Grid view images and containers */
 
 .album-image {
     width: 100%;
     max-width:100%;
     height: auto;   
-
+    box-shadow: 10px 10px 15px #a5a0a0;
 }
 .loading-message {
     width: 300px;
@@ -30,6 +29,9 @@
     margin-top:200px;
     text-align:center;
 
+}
+.search-bar {
+    display: inline-block;
 }
 .loading-text {
     margin-top:20px;
@@ -112,6 +114,26 @@ button.genre-choice {
     display:inline-block;
     float:right;
     transition: 0.2s;
+}
+.track-info {
+    display:inline-block;
+    width:80%;
+}
+.tracklist-album {
+    width:100px;
+    display:inline-block;
+    float:right;
+    transition: 0.2s;
+}
+.list-track {
+    height:100px;
+    border-style:solid;
+    border-color:rgb(177, 174, 174);
+    margin-top: 10px;
+    padding:10px;
+    border-radius:10px;
+    border-width:2px;
+    height:auto;
 
 }
 .track-list-dialog{
@@ -148,6 +170,12 @@ button.genre-choice {
 
             font-size:5em;
          }
+        .tracklist-album {
+            width:80px;
+        }
+        .track-info {
+            width: 70%;
+        }
       
 
 }

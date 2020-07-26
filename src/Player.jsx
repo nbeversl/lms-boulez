@@ -1,4 +1,5 @@
-import { LMSRequest } from './server.js';
+import { LMSRequest } from './server';
+import { start } from 'repl';
 
 class Player {
     
@@ -46,7 +47,7 @@ class Player {
         this.playAlbumFromTrackAndContinue = (track, startNumber) => { 
         
             var albumTitle = track.album;
-            
+    
             LMSRequest([this.address,["playlist","clear"]],(r) => {
                 
                 LMSRequest([this.address,["playlist", "loadalbum",'*', '*', albumTitle]], (r) => {
