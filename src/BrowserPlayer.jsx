@@ -1,5 +1,6 @@
 import { Howl } from 'howler';
 import { LMSRequest } from './server';
+import NoSleep from 'nosleep.js';
 
 class BrowserPlayer {
     constructor(proxyAddress) {
@@ -9,6 +10,17 @@ class BrowserPlayer {
        
         this.tracks = [];
         this.currentIndex = null;
+        this.noSleep = new NoSleep();
+
+        // https://github.com/richtr/NoSleep.js
+        // Enable wake lock.
+        // (must be wrapped in a user input event handler e.g. a mouse or touch handler)
+        
+        const enableNoSleep = () => {
+            document.removeEventListener('click', enableNoSleep, false);
+            this.noSleep.enable();
+        }
+        document.addEventListener('click', enableNoSleep, false);
         
         this.play = () => {
            this.playerInstance.play();
@@ -38,9 +50,7 @@ class BrowserPlayer {
         }
 
         this.setVolume = (value) => {
-
             this.playerInstance.volume(value/100);
-
         }
 
         this.playAlbumFromTrackAndContinue = (track, startNumber) => { 
@@ -55,7 +65,8 @@ class BrowserPlayer {
                 this.tracks = r.result.titles_loop;
   
                 this.clearPlaylist();
-               
+                var sources = [];
+
                 this.playerInstance = new Howl({
                    html5:true,
                     src: [ '/music/' + this.tracks[this.currentIndex].id.toString() +'/download/.flac' ] ,
