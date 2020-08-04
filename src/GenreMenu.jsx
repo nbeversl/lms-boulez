@@ -4,6 +4,7 @@ import { ComposerList } from './Classical';
 import { AlbumGrid }  from './Albums';
 import { BPMView } from './views';
 import { SearchBar, SearchResults } from './Search';
+import ScrollUpButton from "react-scroll-up-button";
 
 class GenreMenu extends React.Component {
     constructor(props) {
@@ -22,11 +23,13 @@ class GenreMenu extends React.Component {
     }
 
     handleGenreChange(e) {
-        this.setState({
-            genreSelected: e.currentTarget.value,
-            view:'grid',
+        
+        var genreSelected = e.currentTarget.value;
+        this.props.library.getAllTitlesforGenre( this.props.library.genres[genreSelected].id, () => {
+            this.setState({
+                genreSelected: genreSelected,
+            });
         });
-        this.props.library.getAllTitlesforGenre( this.props.library.genres[e.currentTarget.value].id);
     }
 
     handleAlbumChange(id, name) {
@@ -111,18 +114,18 @@ class GenreMenu extends React.Component {
             case('grid'):
 
                 var view =  this.state.genreSelected ?
-                            <AlbumGrid 
-                                screenWidth={this.props.screenWidth}
-                                library={this.props.library}
-                                
-                                /* List is from the pre-built library list for the selected genre */
-                                albumList={this.props.library.genres[this.state.genreSelected].albums}                                 
-                                genre={this.state.genreSelected} 
-                                clickHandler={this.handleAlbumChange}
-                                playerInstance={this.props.playerInstance}
-                                checkPlayerInstance={this.props.checkPlayerInstance}
+                                <AlbumGrid 
+                                    screenWidth={this.props.screenWidth}
+                                    library={this.props.library}
+                                    
+                                    /* List is from the pre-built library list for the selected genre */
+                                    albumList={this.props.library.genres[this.state.genreSelected].albums}                                 
+                                    genre={this.state.genreSelected} 
+                                    clickHandler={this.handleAlbumChange}
+                                    playerInstance={this.props.playerInstance}
+                                    checkPlayerInstance={this.props.checkPlayerInstance}
 
-                            />
+                                />
                             :
                             <div>Select a Genre</div>
                 break;
@@ -138,20 +141,20 @@ class GenreMenu extends React.Component {
             case('search'):
 
                 var view =  <SearchResults 
-                    screenWidth={this.props.screenWidth}
-                    library={this.props.library}
-                    playerInstance={this.props.playerInstance}
-                    searchResultsAlbums={this.state.searchResultsAlbums}
-                    searchResultsTracks={this.state.searchResultsTracks}
-                    searchResultsContributors={this.state.searchResultsContributors}
-                    checkPlayerInstance={this.props.checkPlayerInstance}
-                />
+                                screenWidth={this.props.screenWidth}
+                                library={this.props.library}
+                                playerInstance={this.props.playerInstance}
+                                searchResultsAlbums={this.state.searchResultsAlbums}
+                                searchResultsTracks={this.state.searchResultsTracks}
+                                searchResultsContributors={this.state.searchResultsContributors}
+                                checkPlayerInstance={this.props.checkPlayerInstance}
+                          />
         }
         
 
         return (
             
-            <div>
+            <div className="test">
                 <div className='genre-selector'>
                     {this.state.genresTable}
                 </div> 
@@ -163,6 +166,7 @@ class GenreMenu extends React.Component {
                 />
 
                 {view}
+                <ScrollUpButton />
             
             </div>
         )
@@ -178,7 +182,6 @@ class ViewSelector extends React.Component {
                 <Button onClick={() => this.props.handleChange('composer-list')}>Composer/Artist</Button>
                 <Button onClick={() => this.props.handleChange('bpm')}>BPM</Button>
                 <SearchBar searchFor={this.props.searchFor } />
-                <Button onClick={this.props.showDrawer}>Show Drawer</Button>
                 <hr/>
             </div>
             );

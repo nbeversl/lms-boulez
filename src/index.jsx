@@ -11,8 +11,8 @@ import { Yamaha } from './Yamaha';
 import { BrowserPlayer } from './BrowserPlayer';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Album } from './Albums';
-import ScrollUpButton from "react-scroll-up-button";
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import Button from '@material-ui/core/Button';
 
 class App extends React.Component {
     
@@ -28,17 +28,16 @@ class App extends React.Component {
             library : null,
             fullscreen: false,
             lastScrollTop :0,
-            screenWidth: 500,           
+            screenWidth: null,           
             drawer:false,
-            drawerVariant : 'permanent',
+            drawerButton: true,
+            drawerVariant : 'temporary',
         }
 
        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
 
     componentDidMount() {
-
-        this.updateWindowDimensions();
 
         LMSRequest(["",["serverstatus", "0","20"]], (response) => {
            this.setState({serverStatus: response.result});
@@ -61,25 +60,25 @@ class App extends React.Component {
             
             if ( this.state.targetPlayer != "") {
             
-                LMSRequest([this.state.targetPlayer,[ "status","0","10","tags:duration,time,mode, **playlist index**, **l**,**J**"]], (r) => { 
+                LMSRequest([this.state.targetPlayer,[ "status","0","100","tags:duration,time,mode, **playlist index**, **l**,**J**"]], (r) => { 
                     this.setState({
                         playerStatus: r.result,
                         volume: r.result["mixer volume"]
                     });
                 });
             }
-        }, 5000);
+        }, 2500);
 
         this.setState({library : new LMSLibrary() });
         window.addEventListener('resize', this.updateWindowDimensions );
+        this.updateWindowDimensions();
             
     }
 
     updateWindowDimensions() {
-    
         this.setState({ 
-            screenWidth: window.innerWidth,
-            drawerVariant : window.innerWidth > 600 ? 'permanent' : 'temporary',
+            screenWidth: screen.width,
+            drawerVariant : screen.width > 320 ? 'permanent' : 'temporary',
         });
       }
 
@@ -89,7 +88,6 @@ class App extends React.Component {
 
     scrollFunction() {
         if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
-        } else {
         }
       }
 
@@ -109,6 +107,7 @@ class App extends React.Component {
     }
     
     checkPlayerInstance(callback) {
+
         if (! this.state.playerInstance) {
             this.setState({drawer: true });
             this.waitForPlayerInstance(callback);
@@ -121,11 +120,11 @@ class App extends React.Component {
         setTimeout( () => {
             if ( ! this.state.drawer )  { return }
             if ( this.state.playerInstance) {
-                callback();
+               callback();
             } else {
                 this.waitForPlayerInstance(callback);
             }
-        }, 200);
+        }, 500);
     }
 
     handleSeekChange (event, newValue)  {
@@ -142,102 +141,109 @@ class App extends React.Component {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
           return;
         }
-        this.setState({drawer: open });
+        this.setState({drawer: open, drawerButton: !open });
       };
     
    
 
     render ()  {      
         return (
-            this.state.serverStatus ?
-                <div>
-                    <SwipeableDrawer
-                        disableSwipeToOpen={false}
-                        anchor={'top'}
-                        open={this.state.drawer}
-                        onClose={() => this.toggleDrawer('top',false)}
-                        onOpen={() => this.toggleDrawer('top',true)}
-                    >
-                        {/* https://stackoverflow.com/questions/45025397/media-query-not-working-in-react  */}
-                        <meta name="viewport" content="width=device-width,initial-scale=1"></meta>
-                        <link
-                            rel="stylesheet"
-                            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-                            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-                            crossorigin="anonymous"
-                            />
-                        <div className="control-bar">
-                            <div className="control-content">
-                                    
-                                    <div className="player-controls">
-                                        <PlayerControls 
-                                            playerStatus={this.state.playerStatus}
-                                            player={this.state.playerInstance}
-                                            serverStatus={this.state.serverStatus}
-                                            targetPlayer={this.state.targetPlayer}
-                                            volume={this.state.volume }
-                                            switchPlayer={this.switchPlayer.bind(this)}
-                                            handleVolumeChange = {this.handleVolumeChange.bind(this)}
+            <div>
+                 {/* https://stackoverflow.com/questions/45025397/media-query-not-working-in-react  */}
+                 <meta name="viewport" content="width=device-width,initial-scale=1"></meta>
+                        { this.state.serverStatus ?
+                            <div>
+                                <SwipeableDrawer
+                                    disableSwipeToOpen={false}
+                                    anchor={'top'}
+                                    open={this.state.drawer}
+                                    onClose={() => this.toggleDrawer('top',false)}
+                                    onOpen={() => this.toggleDrawer('top',true)}
+                                >
+                                                                
+                                    <link
+                                        rel="stylesheet"
+                                        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
                                         />
+                                    <div className="control-bar">
+                                        <div className="control-content">
+                                                
+                                                <div className="player-controls">
+                                                    <PlayerControls 
+                                                        playerStatus={this.state.playerStatus}
+                                                        player={this.state.playerInstance}
+                                                        serverStatus={this.state.serverStatus}
+                                                        targetPlayer={this.state.targetPlayer}
+                                                        volume={this.state.volume }
+                                                        switchPlayer={this.switchPlayer.bind(this)}
+                                                        handleVolumeChange = {this.handleVolumeChange.bind(this)}
+                                                    />
+                                                </div>
+                                        
+                                            { this.state.playerStatus && this.state.playerStatus.player_name == "Den" ? 
+                                                <YamahaStereo />
+                                                :
+                                                <div></div>
+                                            }
+                                        
+                                            { this.state.playerStatus && this.state.playerStatus.playlist_loop && this.state.playerStatus.playlist_loop[parseInt(this.state.playerStatus.playlist_cur_index)] ? 
+                                                <div className="now-playing">
+                                                    <div className="now-playing-meta">
+                                                       <div className="now-playing-artist">{this.state.playerStatus.playlist_loop[parseInt(this.state.playerStatus.playlist_cur_index)].artist}</div> 
+                                                        <div className="now-playing-album-title">{this.state.playerStatus.playlist_loop[parseInt(this.state.playerStatus.playlist_cur_index)].album}</div>
+                                                        <div className="now-playing-track-name">{this.state.playerStatus.playlist_loop[parseInt(this.state.playerStatus.playlist_cur_index)].tracknum}. {this.state.playerStatus.playlist_loop[parseInt(this.state.playerStatus.playlist_cur_index)].title}</div>
+                                                        <Slider 
+                                                            value={ Math.floor(this.state.playerStatus.time / this.state.playerStatus.duration * 100) } 
+                                                            onChange={this.handleSeekChange.bind(this)} />
+
+                                                    </div>
+
+                                                    <div className="now-playing-album-cover">
+                                                        <Album
+                                                            id={this.state.playerStatus.playlist_loop[parseInt(this.state.playerStatus.playlist_cur_index)].album_id}
+                                                            art={this.state.playerStatus.playlist_loop[parseInt(this.state.playerStatus.playlist_cur_index)].artwork_track_id}
+                                                            library={this.state.library}
+                                                            modal={true}
+                                                            playerInstance={this.state.playerInstance}
+                                                            checkPlayerInstance={this.checkPlayerInstance.bind(this)}
+                                                        />
+                                                    </div>   
+                                                </div>
+                                                : <div></div>
+                                            }
+                                                    
+                                        </div>    
                                     </div>
-                            
-                                { this.state.playerStatus && this.state.playerStatus.player_name == "Den" ? 
-                                    <YamahaStereo />
-                                    :
-                                    <div></div>
-                                }
-                            
-                                { this.state.playerStatus && this.state.playerStatus.playlist_loop && this.state.playerStatus.playlist_loop[this.state.playerStatus.playlist_cur_index] ? 
-                                    <div className="now-playing">
-                                        <div className="now-playing-meta">
-                                            <div className="now-playing-artist">{this.state.playerStatus.playlist_loop[this.state.playerStatus.playlist_cur_index].artist}</div>
-                                            <div className="now-playing-album-title">{this.state.playerStatus.playlist_loop[this.state.playerStatus.playlist_cur_index].album}</div>
-                                            <div className="now-playing-track-name">{this.state.playerStatus.playlist_loop[this.state.playerStatus.playlist_cur_index].tracknum}. {this.state.playerStatus.playlist_loop[this.state.playerStatus.playlist_cur_index].title}</div>
-                                            <Slider 
-                                                value={ Math.floor(this.state.playerStatus.time / this.state.playerStatus.duration * 100) } 
-                                                onChange={this.handleSeekChange.bind(this)} />
-
-                                        </div>
-
-                                        <div className="now-playing-album-cover">
-                                            <Album
-                                                id={this.state.playerStatus.playlist_loop[this.state.playerStatus.playlist_cur_index].album_id}
-                                                art={this.state.playerStatus.playlist_loop[this.state.playerStatus.playlist_cur_index].artwork_track_id}
-                                                library={this.state.library}
-                                                modal={true}
+                                </SwipeableDrawer>   
+                                
+                                    { this.state.library.genres ?
+                                        <div className="the-rest">
+                                            <GenreMenu 
+                                                screenWidth={this.state.screenWidth}
                                                 playerInstance={this.state.playerInstance}
+                                                library={this.state.library} 
                                                 checkPlayerInstance={this.checkPlayerInstance.bind(this)}
                                             />
-                                        </div>   
-                                    </div>
+                                        </div>
                                     : <div></div>
-                                }
-                                        
-                            </div>    
-                        </div>
-                    </SwipeableDrawer>   
+                                    }
+                                { this.state.drawerButton ?
+                                    <Button onClick={ () => { this.toggleDrawer('top', true)} } className="drawer-button">
+                                       &#8609; Controls
+                                    </Button>
+                                    :
+                                    <div></div>
+                              }   
+                                </div> 
 
-                    <ScrollUpButton /> 
-                    { this.state.library.genres ?
-                        <div className="the-rest">
-                            <GenreMenu 
-                                screenWidth={this.state.screenWidth}
-                                playerInstance={this.state.playerInstance}
-                                library={this.state.library} 
-                                showDrawer={() => { this.toggleDrawer('top', true)} }
-                                checkPlayerInstance={this.checkPlayerInstance.bind(this)}
-                            />
+                        :
+                        <div className="loading-message"> 
+                            <CircularProgress />
+                            <div className="loading-text"> Loading the highest quality, most organized music library in the world...</div>
                         </div>
-                    : <div></div>
-                    }
-                          
-                </div>
-                     
-            :
-            <div className="loading-message"> 
-                <CircularProgress />
-                <div className="loading-text"> Loading the highest quality, most organized music library in the world...</div>
-             </div>
+                        }                       
+
+                </div>  
         );
     }
 }

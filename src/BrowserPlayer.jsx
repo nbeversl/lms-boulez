@@ -44,14 +44,14 @@ class BrowserPlayer {
         }
 
         this.playAlbumFromTrackAndContinue = (track, startNumber) => { 
-            
+           
             var albumID = track.album_id;
 
-            LMSRequest(["",["titles", "0", "100", "album_id:"+albumID, "sort:tracknum"]], (r) => {
+            LMSRequest(["",["titles", "0", "100", "album_id:"+albumID, "sort:tracknum", "tags:**e**"]], (r) => {
 
                 startNumber = parseInt(startNumber);
                 this.currentIndex = startNumber;
-
+    
                 this.tracks = r.result.titles_loop;
   
                 this.clearPlaylist();

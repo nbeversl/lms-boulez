@@ -2,7 +2,6 @@ import Card from 'react-bootstrap/Card';
 import * as React from "react";
 import { TrackList , TrackListScrolling } from './Tracks';
 import Grid from '@material-ui/core/Grid';
-import FlipCard from 'react-png-flipcard';
 import Dialog from '@material-ui/core/Dialog';
 import Slider from '@material-ui/core/Slider';
 import Button from '@material-ui/core/Button';
@@ -47,7 +46,7 @@ class Album extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            tracks : [],
+            discs : null,
             flipped : false,
             modalOpen : false,
             dimensions : 300,
@@ -55,8 +54,19 @@ class Album extends React.Component {
     }
     getMyTracks() {
         this.props.library.getAlbumTracks(this.props.id, (result) => {
+            var discs = {};
+            result.forEach( (track) => {
+                var disc = track.disc;
+                if (! disc ) {
+                    disc = "1";
+                }
+                if (! Object.keys(discs).includes(disc)) {
+                    discs[disc] = [] 
+                } 
+                discs[disc].push(track);
+            });
             this.setState({
-                tracks: result,
+                discs: discs,
             });
             this.setState({flipped : true, modalOpen: true});
         });
@@ -75,60 +85,22 @@ class Album extends React.Component {
     render() {   
 
         var modalStyle = {
-            //position: 'inherit',
             width: "600px",
             height:600,
             backgroundColor: 'white',
-            //border: '2px solid #000',
-            //boxShadow: theme.shadows[5],
-            //padding: theme.spacing(2, 4, 3),
         }
         var backgroundImageStyle = {
-            position: 'absolute', 
             WebkitFilter: 'blur(10px) saturate(2) opacity(.3)',
             filter:'blur(10px) saturate(2) opacity(.3)',
-            background: 'url("/music/'+this.props.art+'/cover.jpg") no-repeat fixed top',
-            width:"100%",
-            maxWidth: "100%",
-            height:"800px",
+            background: 'url("/music/'+this.props.art+'/cover.jpg")',
         }
         var buttonStyle = {
             width: this.props.albumWidth,
             height: this.props.albumWidth,
         }
         return (
-            <div>
-                {/* { this.props.screenWidth > 600 && this.props.modal != true ? 
-                    <div className="album-cover" onMouseLeave={this.handleMouseLeave.bind(this)} >
-                        <FlipCard  
-                            width={this.props.albumWidth}
-                            height={this.props.albumWidth} // keep square
-                            flip={this.state.flipped} 
-                            manual={true} 
-                            key={this.props.id}
-                            value={this.props.name} 
-                            front = {   
-                                <div onClick={this.getMyTracks.bind(this)} >
-                                    <img
-                                        src={"/music/"+this.props.art+"/cover.jpg"}
-                                        className={"album-image"}
-                                    />                 
-                                </div>
-                            }
-                            back = { 
-                                this.state.tracks ?
-                                    <TrackListScrolling             
-                                            playerInstance={this.props.playerInstance} 
-                                            tracks = {this.state.tracks}
-                                            album = {this.props.id}
-                                        /> 
-                                :
-                                <div>hang on ...</div>
-                            } >
-                        </FlipCard>
+            <div className="album">
 
-                    </div>
-                : */}
                 <div style={buttonStyle}>                    
                     <Button onClick={this.handleOpen.bind(this)}>
                         <img
@@ -138,24 +110,22 @@ class Album extends React.Component {
                     </Button>
                         <Dialog
                             TransitionComponent={Zoom}
-                            open={this.state.modalOpen}>
+                            open={this.state.modalOpen}
+                            onBackdropClick= {this.handleClose.bind(this)} >
                             <div style={modalStyle} >
-                                { this.state.tracks ?
+                                { this.state.discs ?
                                     <div>
-                                        <div>
-                                            <Button onClick={this.handleClose.bind(this)}>
-                                                Close
-                                            </Button>
-                                        </div>
-                                        <div  > 
+                                        <div> 
                                             <TrackListScrolling      
                                                 playerInstance={this.props.playerInstance} 
-                                                tracks = {this.state.tracks}
+                                                discs = {this.state.discs}
                                                 album = {this.props.id}
-                                                checkPlayerInstance={this.props.checkPlayerInstance}
+                                                checkPlayerInstance={this.props.checkPlayerInstance}x
                                             />
                                         </div>
-                                        <div style={ backgroundImageStyle } />    
+                                        <div className={"album-background-image-wrapper"}>
+                                            <div className={"album-background-image"} style={ backgroundImageStyle } />    
+                                        </div>
                                     </div>                                        
                                     :
                                     <div>hang on ...</div>
@@ -181,26 +151,28 @@ class AlbumGrid extends React.Component {
         this.setState({albumWidth : newValue })
     }
 
+   
     render() {
         let List = [];
-        this.props.albumList.forEach( (album) =>
-            { 
-                        
-            List.push(
-                
-                <Grid item  key={album.id}>
-                    <Album  
-                        screenWidth={this.props.screenWidth}
-                        albumWidth={this.state.albumWidth}
-                        name={album.album} 
-                        id={album.id}
-                        art={album.artwork_track_id}
-                        library={this.props.library}
-                        playerInstance={this.props.playerInstance}
-                        checkPlayerInstance={this.props.checkPlayerInstance}
-                    />
-                </Grid>
-            )});
+
+        var albums = this.props.albumList || [];
+        albums.forEach( (album) =>
+                { 
+                List.push(
+
+                    <Grid item  key={album.id}>
+                        <Album  
+                            screenWidth={this.props.screenWidth}
+                            albumWidth={this.state.albumWidth}
+                            name={album.album} 
+                            id={album.id}
+                            art={album.artwork_track_id}
+                            library={this.props.library}
+                            playerInstance={this.props.playerInstance}
+                            checkPlayerInstance={this.props.checkPlayerInstance}
+                        />
+                    </Grid>
+                )});
         return (
             <div>
                 <a name="albums"></a><h2>Albums</h2>
@@ -210,10 +182,9 @@ class AlbumGrid extends React.Component {
                     container 
                     spacing={this.props.screenWidth > 600 ? 3 : 1 }
                     >
+                
                     {List}
                 </Grid>
-                
-            
             </div>
         )
     }

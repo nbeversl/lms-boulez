@@ -24,11 +24,10 @@ class LMSLibrary {
         });
     }
 
-    getAllTitlesforGenre(id) {
-
-        this.titles = [];     
+    getAllTitlesforGenre(id, callback) {
+        this.titles = [];
         LMSRequest(["",["titles", "0", "50000", "genre_id:"+id.toString(), "tags:id**e****o****t****m****u****a****l**" ]], (r) => {
-      
+
             r.result.titles_loop.forEach( (item) => {
 
                 this.tracks.push(item);
@@ -38,12 +37,14 @@ class LMSLibrary {
                 }
                 this.albums[item.album_id][item.tracknum] = item;
             });
+            if (callback) { callback(); }
         });
     }
 
     getAlbumTracks (albumID, callback) {
 
-        LMSRequest(["",["titles","0","100","album_id:"+albumID, "sort:tracknum", "tags:**o****l**"]],(r) => {           
+        LMSRequest(["",["titles","0","100","album_id:"+albumID, "sort:tracknum", "tags:**t****o****l****i****e**"]],(r) => {           
+
             callback(r.result.titles_loop )
         });
     }
