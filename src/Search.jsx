@@ -5,7 +5,7 @@ import { AlbumGrid }  from './Albums';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
-import { timeStamp } from "console";
+import Button from '@material-ui/core/Button';
 
 class SearchBar extends React.Component {
     
@@ -17,10 +17,12 @@ class SearchBar extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
         this.props.searchFor(this.state.searchString);
-
     }
     handleChange(event) {
         this.setState({searchString: event.target.value})
+    }
+    clearSearchString() {
+        this.setState({searchString:''});
     }
     
     render () {
@@ -29,16 +31,18 @@ class SearchBar extends React.Component {
             <div className="search-bar">
                 <form onSubmit={this.handleSubmit.bind(this) }>
                     <TextField 
+                        variant="outlined"
+                        size="small"
                         value={this.state.searchString}
                         onChange={this.handleChange.bind(this)} 
                     />
-                    <input type="submit" value="Search" />
+                    <Button className="search-clear" onClick={this.clearSearchString.bind(this) }>x</Button>
+                    <Button className="search-button" onClick={this.handleSubmit.bind(this) }>Search</Button>
                 </form>
             </div>
         )
     }
 }
-
 
 class SearchResults extends React.Component {
 
@@ -169,5 +173,3 @@ class ArtistList extends React.Component {
 }
 
 export { SearchBar, SearchResults }
-
-

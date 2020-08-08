@@ -229,7 +229,7 @@ class App extends React.Component {
                                     }
                                 { this.state.drawerButton ?
                                     <Button onClick={ () => { this.toggleDrawer('top', true)} } className="drawer-button">
-                                       &#8609; Controls
+                                       <img className={"btn-icon"} src={"./html/52558-200.png"}/>
                                     </Button>
                                     :
                                     <div></div>
@@ -253,7 +253,7 @@ class YamahaStereo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            instance: new Yamaha(),
+            instance: new Yamaha('http://10.0.0.210:8080/10.0.0.68'),
         }
     }
 
@@ -268,7 +268,6 @@ class YamahaStereo extends React.Component {
                 {   this.state.instance.ready ?
                     <div>
                       Volume Control Here
-                      
                     </div>
                     :
                     <div></div>

@@ -28,6 +28,7 @@ class GenreMenu extends React.Component {
         this.props.library.getAllTitlesforGenre( this.props.library.genres[genreSelected].id, () => {
             this.setState({
                 genreSelected: genreSelected,
+                view: 'grid',
             });
         });
     }
@@ -112,7 +113,7 @@ class GenreMenu extends React.Component {
                         break;
                 
             case('grid'):
-
+                console.log('DRIFDFDS!')
                 var view =  this.state.genreSelected ?
                                 <AlbumGrid 
                                     screenWidth={this.props.screenWidth}

@@ -60,15 +60,22 @@
 .genre-selector {
     margin-bottom:25px;
     font-size:40px !important;
+    margin-right:35px;
 }
-button.genre-choice {
+button.genre-choice, button.search-button {
     text-transform: none;
     border:solid;   
     border-color: rgb(179, 177, 177);
     border-width:1px;
     margin-left:1em;
-    margin: 5px 5px 5px 0px ;
+    margin: 5px 5px 5px 0px;
+    padding: 2px 12px;
 }
+.search-clear {
+    background-color: #dcdcdc;
+    border-radius: 5px;
+}
+
 .codec {
     color: grey;
     padding: 0 10px 0 10px;
@@ -181,6 +188,7 @@ button.genre-choice {
     
        .genre-selector {
            font-size:50px !important;
+          
        }
 
        .now-playing {

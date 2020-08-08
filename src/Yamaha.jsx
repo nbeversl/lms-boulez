@@ -1,11 +1,20 @@
+/* 
+For XML reference and to extend, see
+https://github.com/christianfl/av-receiver-docs
+https://www.openhab.org/addons/bindings/yamahareceiver/ 
+https://github.com/BirdAPI/yamaha-network-receivers/blob/master/yamaha_xml.py
+
+*/
+
 class Yamaha {
     
-    constructor() {
+    constructor(ip) {
         
         this.ready = false;
+        this.ip = ip;
         this.APICall = (body, callback) => {
-
-            fetch('http://10.0.0.210:8080/10.0.0.68/YamahaRemoteControl/ctrl',
+        
+            fetch(this.ip+'/YamahaRemoteControl/ctrl',
                 { method: 'POST', 
                 headers: {
                     'Content-Type': 'text/plain'
@@ -42,13 +51,15 @@ class Yamaha {
             (xmlDoc) => { 
             });   
         }
-        this.getStatus();
-        this.getInputs();
+
         this.TurnOn = () => {
              this.APICall('<YAMAHA_AV cmd="PUT"><Main_Zone><Power_Control><Power>On</Power></Power_Control></Main_Zone></YAMAHA_AV>')    
         }
-        
+
+        this.getStatus();
+        this.getInputs();        
         this.TurnOn();
+
         setTimeout( ()=> { 
             this.setInput();
         }, 7000);
