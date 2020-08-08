@@ -7,7 +7,6 @@ import { LMSRequest } from './server';
 import { PlayerControls } from './PlayerControls';
 import { LMSLibrary } from './Library';
 import Slider from '@material-ui/core/Slider';
-import { Yamaha } from './Yamaha';
 import { BrowserPlayer } from './BrowserPlayer';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Album } from './Albums';
@@ -149,7 +148,6 @@ class App extends React.Component {
     render ()  {      
         return (
             <div>
-                 {/* https://stackoverflow.com/questions/45025397/media-query-not-working-in-react  */}
                  <meta name="viewport" content="width=device-width,initial-scale=1"></meta>
                         { this.state.serverStatus ?
                             <div>
@@ -179,12 +177,6 @@ class App extends React.Component {
                                                         handleVolumeChange = {this.handleVolumeChange.bind(this)}
                                                     />
                                                 </div>
-                                        
-                                            { this.state.playerStatus && this.state.playerStatus.player_name == "Den" ? 
-                                                <YamahaStereo />
-                                                :
-                                                <div></div>
-                                            }
                                         
                                             { this.state.playerStatus && this.state.playerStatus.playlist_loop && this.state.playerStatus.playlist_loop[parseInt(this.state.playerStatus.playlist_cur_index)] ? 
                                                 <div className="now-playing">
@@ -245,36 +237,6 @@ class App extends React.Component {
 
                 </div>  
         );
-    }
-}
-
-class YamahaStereo extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            instance: new Yamaha('http://10.0.0.210:8080/10.0.0.68'),
-        }
-    }
-
-    setInput(input) {
-        this.state.instance.setInput(input);
-    }
-
-    render() {
-       
-        return (    
-            <div>
-                {   this.state.instance.ready ?
-                    <div>
-                      Volume Control Here
-                    </div>
-                    :
-                    <div></div>
-                }
-
-            </div>
-        )    
     }
 }
 
