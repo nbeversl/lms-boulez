@@ -44,7 +44,5 @@ Clone the repository.
 A `webpack.config.js` is provided, but you have to populate `module.exports.output.path`. For example, if you install the complete theme on your server (https://github.com/nbeversl/lms-boulez-theme), you can direct development builds directly to overrwrite `main.js` for testing. You can also bootstrap it yourself if you want to build a theme from scratch.
 
 run `npm install`
-use `npm watch` or `npm build`
 
 
-from::wwci-00407.local; id::u4i; timestamp::<Sun., Aug. 09, 2020, 01:13 PM +0000>; 
