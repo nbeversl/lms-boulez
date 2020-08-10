@@ -113,23 +113,23 @@ class GenreMenu extends React.Component {
                         break;
                 
             case('grid'):
-                console.log('DRIFDFDS!')
-                var view =  this.state.genreSelected ?
-                                <AlbumGrid 
-                                    screenWidth={this.props.screenWidth}
-                                    library={this.props.library}
-                                    
-                                    /* List is from the pre-built library list for the selected genre */
-                                    albumList={this.props.library.genres[this.state.genreSelected].albums}                                 
-                                    genre={this.state.genreSelected} 
-                                    clickHandler={this.handleAlbumChange}
-                                    playerInstance={this.props.playerInstance}
-                                    checkPlayerInstance={this.props.checkPlayerInstance}
 
-                                />
-                            :
-                            <div>Select a Genre</div>
-                break;
+                var view =  this.state.genreSelected ?
+                                    <AlbumGrid 
+                                        screenWidth={this.props.screenWidth}
+                                        library={this.props.library}
+                                        
+                                        /* List is from the pre-built library list for the selected genre */
+                                        albumList={this.props.library.genres[this.state.genreSelected].albums}                                 
+                                        genre={this.state.genreSelected} 
+                                        clickHandler={this.handleAlbumChange}
+                                        playerInstance={this.props.playerInstance}
+                                        checkPlayerInstance={this.props.checkPlayerInstance}
+
+                                    />
+                                :
+                                <div>Select a Genre</div>
+                    break;
             
             case('bpm'):
                 
