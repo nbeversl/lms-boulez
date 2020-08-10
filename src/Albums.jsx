@@ -175,7 +175,7 @@ class AlbumGrid extends React.Component {
                 )});
         return (
             <div>
-                <a name="albums"></a><h2>Albums</h2>
+                <a name="albums"></a>
                 <Slider min={40} max={300} defaultValue={this.props.screenWidth > 600 ? 300 : 90}  onChange={this.adjustWidth.bind(this)} />
                 
                 <Grid 

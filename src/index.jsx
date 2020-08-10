@@ -231,7 +231,7 @@ class App extends React.Component {
                         :
                         <div className="loading-message"> 
                             <CircularProgress />
-                            <div className="loading-text"> Loading the highest quality, most organized music library in the world...</div>
+                            <div className="loading-text"></div>
                         </div>
                         }                       
 
