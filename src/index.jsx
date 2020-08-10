@@ -6,12 +6,13 @@ import './style.css';
 import { LMSRequest } from './server';
 import { PlayerControls } from './PlayerControls';
 import { LMSLibrary } from './Library';
-import Slider from '@material-ui/core/Slider';
 import { BrowserPlayer } from './BrowserPlayer';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Album } from './Albums';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Button from '@material-ui/core/Button';
+import NowPlaying from './NowPlaying';
+
+const ServerContext = React.createContext(null);
 
 class App extends React.Component {
     
@@ -101,7 +102,6 @@ class App extends React.Component {
             targetPlayer: e.target.value,
             playerInstance : newPlayer,
         });
-        const playerChanged = new Event('playerChanged');
        
     }
     
@@ -143,12 +143,11 @@ class App extends React.Component {
         this.setState({drawer: open, drawerButton: !open });
       };
     
-   
-
     render ()  {      
         return (
-            <div>
-                 <meta name="viewport" content="width=device-width,initial-scale=1"></meta>
+           
+                <div>
+                    <meta name="viewport" content="width=device-width,initial-scale=1"></meta>
                         { this.state.serverStatus ?
                             <div>
                                 <SwipeableDrawer
@@ -165,7 +164,6 @@ class App extends React.Component {
                                         />
                                     <div className="control-bar">
                                         <div className="control-content">
-                                                
                                                 <div className="player-controls">
                                                     <PlayerControls 
                                                         playerStatus={this.state.playerStatus}
@@ -177,33 +175,11 @@ class App extends React.Component {
                                                         handleVolumeChange = {this.handleVolumeChange.bind(this)}
                                                     />
                                                 </div>
-                                        
-                                            { this.state.playerStatus && this.state.playerStatus.playlist_loop && this.state.playerStatus.playlist_loop[parseInt(this.state.playerStatus.playlist_cur_index)] ? 
-                                                <div className="now-playing">
-                                                    <div className="now-playing-meta">
-                                                       <div className="now-playing-artist">{this.state.playerStatus.playlist_loop[parseInt(this.state.playerStatus.playlist_cur_index)].artist}</div> 
-                                                        <div className="now-playing-album-title">{this.state.playerStatus.playlist_loop[parseInt(this.state.playerStatus.playlist_cur_index)].album}</div>
-                                                        <div className="now-playing-track-name">{this.state.playerStatus.playlist_loop[parseInt(this.state.playerStatus.playlist_cur_index)].tracknum}. {this.state.playerStatus.playlist_loop[parseInt(this.state.playerStatus.playlist_cur_index)].title}</div>
-                                                        <Slider 
-                                                            value={ Math.floor(this.state.playerStatus.time / this.state.playerStatus.duration * 100) } 
-                                                            onChange={this.handleSeekChange.bind(this)} />
-
-                                                    </div>
-
-                                                    <div className="now-playing-album-cover">
-                                                        <Album
-                                                            id={this.state.playerStatus.playlist_loop[parseInt(this.state.playerStatus.playlist_cur_index)].album_id}
-                                                            art={this.state.playerStatus.playlist_loop[parseInt(this.state.playerStatus.playlist_cur_index)].artwork_track_id}
-                                                            library={this.state.library}
-                                                            modal={true}
-                                                            playerInstance={this.state.playerInstance}
-                                                            checkPlayerInstance={this.checkPlayerInstance.bind(this)}
-                                                        />
-                                                    </div>   
-                                                </div>
-                                                : <div></div>
-                                            }
-                                                    
+                        
+                                                <NowPlaying
+                                                    playerStatus={this.state.playerStatus}
+                                                    library={this.state.library} 
+                                                    checkPlayerInstance={this.checkPlayerInstance.bind(this)} />                                        
                                         </div>    
                                     </div>
                                 </SwipeableDrawer>   
@@ -221,24 +197,23 @@ class App extends React.Component {
                                     }
                                 { this.state.drawerButton ?
                                     <Button onClick={ () => { this.toggleDrawer('top', true)} } className="drawer-button">
-                                       <img className={"btn-icon"} src={"./html/52558-200.png"}/>
+                                        <img className={"btn-icon"} src={"./html/52558-200.png"}/>
                                     </Button>
                                     :
                                     <div></div>
-                              }   
+                                }   
                                 </div> 
 
                         :
                         <div className="loading-message"> 
                             <CircularProgress />
-                            <div className="loading-text"></div>
                         </div>
-                        }                       
-
-                </div>  
+                        }                      
+                    </div>  
         );
     }
 }
+
 
 render ( 
     <App />,

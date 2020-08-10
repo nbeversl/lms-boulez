@@ -1,7 +1,7 @@
 import * as React from "react";
 import TextField from '@material-ui/core/TextField';
 import { TrackWithSourceAlbum } from "./Tracks";
-import { AlbumGrid }  from './Albums';
+import AlbumGrid  from './AlbumGrid';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';

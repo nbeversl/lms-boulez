@@ -7,11 +7,7 @@ module.exports = {
     entry: "./src/index.jsx",
     output: {
         filename: "main.js",
-<<<<<<< HEAD
-        path : "/Volumes/Mac\ Mini SSD/Library/PreferencePanes/Squeezebox.prefPane/Contents/server/HTML",
-=======
-        //path : "",
->>>>>>> master
+        path : "/Volumes/Mac\ Mini SSD/Library/PreferencePanes/Squeezebox.prefPane/Contents/server/HTML/Nate",
         //path: path.resolve(__dirname, "dist")
     },
     resolve: {

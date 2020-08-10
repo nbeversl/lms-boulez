@@ -1,7 +1,7 @@
 import * as React from "react";
 import Button from '@material-ui/core/Button';
 import { ComposerList } from './Classical';
-import { AlbumGrid }  from './Albums';
+import AlbumGrid from './AlbumGrid';
 import { BPMView } from './views';
 import { SearchBar, SearchResults } from './Search';
 import ScrollUpButton from "react-scroll-up-button";

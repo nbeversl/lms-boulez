@@ -1,8 +1,7 @@
 import * as React from "react";
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
-import { AlbumGrid }  from './Albums';
-import  { TrackWithSourceAlbum  } from './Tracks';
+import AlbumGrid from './AlbumGrid';
 
 class ComposerList extends React.Component {
     
