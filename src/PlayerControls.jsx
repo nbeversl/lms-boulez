@@ -5,6 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
+import ServerContext from './ServerContext';
 
 class PlayerControls extends React.Component {
     
@@ -18,42 +19,47 @@ class PlayerControls extends React.Component {
     render() {
         
         return (
-           
-            <div>
-                <div className={"player-selector"}>
-                    <PlayerSelector 
-                        players={this.props.serverStatus.players_loop} 
-                        selectedPlayer={this.props.targetPlayer}
-                        onSelect={this.props.switchPlayer.bind(this)}
-                    />
+           <ServerContext.Consumer>
+             
+               { ({ serverStatus, playerStatus, playerInstance } )  => (
+                    <div className="player-controls">
+                        <div className={"player-selector"}>
+                            <PlayerSelector 
+                                players={serverStatus.players_loop} 
+                                selectedPlayer={this.props.targetPlayer}
+                                onSelect={this.props.switchPlayer.bind(this)}
+                            />
+                        </div>
+
+                        <Button onClick={playerInstance ? playerInstance.pause : null}> 
+                            {  playerStatus && playerStatus.mode == 'play' ? 
+                                <img className={"btn-icon"} src={"./html/pause.png"} />
+                                :
+                                <img className={"btn-icon"} src={"./html/play.png"} />
+                            }   
+                        </Button>
+
+                        <Button onClick={playerInstance ? playerInstance.previousTrack : null}>
+                            <img className={"btn-icon"} src={"./html/previous.png"} />
+                        </Button>
+
+                        <Button onClick={playerInstance ? playerInstance.nextTrack : null}>
+                            <img className={"btn-icon"} src={"./html/next.png"} />
+                        </Button>
+
+                        <Button href="/settings/index.html" target="sc_settings">
+                            <img className={"btn-icon"} src={"./html/settings.png"} />
+                        </Button>
+
+                        <div className={"slider-volume"}>
+                            <Slider
+                                value={this.props.volume}
+                                onChange={this.props.handleVolumeChange} />
+                        </div> 
                 </div>
-
-                <Button onClick={this.props.player ? this.props.player.pause : null}> 
-                    {  this.props.playerStatus && this.props.playerStatus.mode == 'play' ? 
-                        <img className={"btn-icon"} src={"./html/pause.png"} />
-                        :
-                        <img className={"btn-icon"} src={"./html/play.png"} />
-                    }   
-                </Button>
-
-                <Button onClick={this.props.player ? this.props.player.previousTrack : null}>
-                    <img className={"btn-icon"} src={"./html/previous.png"} />
-                </Button>
-
-                <Button onClick={this.props.player ? this.props.player.nextTrack : null}>
-                    <img className={"btn-icon"} src={"./html/next.png"} />
-                </Button>
-
-                <Button href="/settings/index.html" target="sc_settings">
-                    <img className={"btn-icon"} src={"./html/settings.png"} />
-                </Button>
-
-                <div className={"slider-volume"}>
-                    <Slider
-                        value={this.props.volume}
-                        onChange={this.props.handleVolumeChange} />
-                </div> 
-            </div>
+               )}
+  
+            </ServerContext.Consumer>
         )
         
     } 

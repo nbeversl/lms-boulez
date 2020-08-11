@@ -9,6 +9,7 @@ class LMSLibrary {
         this.albums = {};
         this.tracks = [];
         this.establishLibrary();
+
     }
     establishLibrary() {
 
@@ -24,19 +25,12 @@ class LMSLibrary {
         });
     }
 
-    getAllTitlesforGenre(id, callback) {
+    getAllAlbumsforGenre(id, callback) {
         this.titles = [];
-        LMSRequest(["",["titles", "0", "50000", "genre_id:"+id.toString(), "tags:id**e****o****t****m****u****a****l**" ]], (r) => {
-
-            r.result.titles_loop.forEach( (item) => {
-
-                this.tracks.push(item);
-
-                if ( ! ( item.album_id in this.albums) ) {
-                    this.albums[item.album_id] = {};
-                }
-                this.albums[item.album_id][item.tracknum] = item;
-            });
+        LMSRequest(["",["albums", "0", "50000", "genre_id:"+id.toString(), "tags:**id**ljatsS" ]], (r) => {
+            r.result.albums_loop.forEach( (album) => {
+                    this.albums[album.id] = album;
+                });
             if (callback) { callback(); }
         });
     }
@@ -58,6 +52,10 @@ class LMSLibrary {
 
     }
 
+    getAlbumFromID(albumID) {
+        return LMSRequest(["",["albums","0","100","album_id:"+albumID, "tags:ljaS"]]);
+
+    }
     searchTracks(searchString, callback) {
         
         LMSRequest(["",["titles","0","100","search:"+searchString, "tags:id**e****o****t****m****u****a****l****J**"]],(r) => {           

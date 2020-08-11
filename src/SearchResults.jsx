@@ -1,48 +1,9 @@
 import * as React from "react";
-import TextField from '@material-ui/core/TextField';
-import { TrackWithSourceAlbum } from "./Tracks";
+import TrackWithSourceAlbum from "./TrackWithSourceAlbum";
 import AlbumGrid  from './AlbumGrid';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
-import Button from '@material-ui/core/Button';
-
-class SearchBar extends React.Component {
-    
-    constructor(props) {
-        this.state = {
-            searchString: '',
-        }
-    }
-    handleSubmit(event) {
-        event.preventDefault();
-        this.props.searchFor(this.state.searchString);
-    }
-    handleChange(event) {
-        this.setState({searchString: event.target.value})
-    }
-    clearSearchString() {
-        this.setState({searchString:''});
-    }
-    
-    render () {
-    
-        return (
-            <div className="search-bar">
-                <form onSubmit={this.handleSubmit.bind(this) }>
-                    <TextField 
-                        variant="outlined"
-                        size="small"
-                        value={this.state.searchString}
-                        onChange={this.handleChange.bind(this)} 
-                    />
-                    <Button className="search-clear" onClick={this.clearSearchString.bind(this) }>x</Button>
-                    <Button className="search-button" onClick={this.handleSubmit.bind(this) }>Search</Button>
-                </form>
-            </div>
-        )
-    }
-}
 
 class SearchResults extends React.Component {
 
@@ -55,14 +16,12 @@ class SearchResults extends React.Component {
     render() {
         return (
             <div>
-                <a href="#tracks">Tracks</a>  <a href="#artists">Artists/Contributors</a>
+                <a href="#tracks">Tracks</a><a href="#artists">Artists/Contributors</a>
                 { this.props.searchResultsAlbums ?
                     
                     <AlbumGrid
                         albumList={this.props.searchResultsAlbums}
                         screenWidth={this.props.screenWidth}
-                        library={this.props.library}
-                        playerInstance={this.props.playerInstance}
                         checkPlayerInstance={this.props.checkPlayerInstance}
                         >
                     </AlbumGrid>
@@ -70,11 +29,9 @@ class SearchResults extends React.Component {
                     <div>No Albums found</div>
                 }
                 { this.props.searchResultsTracks ?
-                   
+                
                     <TrackWithSourceAlbum 
                         tracks={this.props.searchResultsTracks} 
-                        playerInstance={this.props.playerInstance}
-                        library={this.props.library}
                         checkPlayerInstance={this.props.checkPlayerInstance}
                     />
                     :
@@ -84,8 +41,6 @@ class SearchResults extends React.Component {
 
                     <ArtistList 
                         artists={this.props.searchResultsContributors} 
-                        library={this.props.library}
-                        playerInstance={this.props.playerInstance}
                         checkPlayerInstance={this.props.checkPlayerInstance}
                     />
                     :
@@ -172,4 +127,4 @@ class ArtistList extends React.Component {
     }
 }
 
-export { SearchBar, SearchResults }
+export default SearchResults;

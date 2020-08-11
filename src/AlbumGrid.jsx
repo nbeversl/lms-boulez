@@ -22,16 +22,11 @@ class AlbumGrid extends React.Component {
         albums.forEach( (album) =>
                 { 
                     List.push(
-
                         <Grid item key={album.id}>
                             <Album  
                                 screenWidth={this.props.screenWidth}
                                 albumWidth={this.state.albumWidth}
-                                name={album.album} 
-                                id={album.id}
-                                art={album.artwork_track_id}
-                                library={this.props.library}
-                                playerInstance={this.props.playerInstance}
+                                album={album} 
                                 checkPlayerInstance={this.props.checkPlayerInstance}
                             />
                         </Grid>
@@ -40,12 +35,9 @@ class AlbumGrid extends React.Component {
             <div>
                 <a name="albums"></a>
                 <Slider min={40} max={300} defaultValue={this.props.screenWidth > 600 ? 300 : 90}  onChange={this.adjustWidth.bind(this)} />
-                
                 <Grid 
                     container 
-                    spacing={this.props.screenWidth > 600 ? 3 : 1 }
-                    >
-                
+                    spacing={this.props.screenWidth > 600 ? 3 : 1 }>
                     {List}
                 </Grid>
             </div>

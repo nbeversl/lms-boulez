@@ -57,9 +57,7 @@ class TrackListScrolling extends React.Component {
             <div>
             { this.props.discs ? 
                 <Scrollbars 
-    
                     style={tracklistStyle}> 
-
                     <div className="grid-tracklist">
                         {List}
                     </div>

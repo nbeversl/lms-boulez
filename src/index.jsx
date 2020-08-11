@@ -11,8 +11,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Button from '@material-ui/core/Button';
 import NowPlaying from './NowPlaying';
-
-const ServerContext = React.createContext(null);
+import ServerContext from './ServerContext';
 
 class App extends React.Component {
     
@@ -32,6 +31,8 @@ class App extends React.Component {
             drawer:false,
             drawerButton: true,
             drawerVariant : 'temporary',
+
+
         }
 
        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
@@ -144,8 +145,16 @@ class App extends React.Component {
       };
     
     render ()  {      
+        var globals = {
+            currentPlayer: this.state.currentPlayer,
+            playerInstance: this.state.playerInstance,
+            library: this.state.library,
+            serverStatus: this.state.serverStatus,
+            playerStatus : this.state.playerStatus,
+        }
+        
         return (
-           
+            <ServerContext.Provider value={globals}>
                 <div>
                     <meta name="viewport" content="width=device-width,initial-scale=1"></meta>
                         { this.state.serverStatus ?
@@ -155,46 +164,37 @@ class App extends React.Component {
                                     anchor={'top'}
                                     open={this.state.drawer}
                                     onClose={() => this.toggleDrawer('top',false)}
-                                    onOpen={() => this.toggleDrawer('top',true)}
-                                >
+                                    onOpen={() => this.toggleDrawer('top',true)}>
                                                                 
-                                    <link
-                                        rel="stylesheet"
-                                        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-                                        />
+                                    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"/>
+
                                     <div className="control-bar">
-                                        <div className="control-content">
-                                                <div className="player-controls">
-                                                    <PlayerControls 
-                                                        playerStatus={this.state.playerStatus}
-                                                        player={this.state.playerInstance}
-                                                        serverStatus={this.state.serverStatus}
-                                                        targetPlayer={this.state.targetPlayer}
-                                                        volume={this.state.volume }
-                                                        switchPlayer={this.switchPlayer.bind(this)}
-                                                        handleVolumeChange = {this.handleVolumeChange.bind(this)}
-                                                    />
-                                                </div>
-                        
-                                                <NowPlaying
-                                                    playerStatus={this.state.playerStatus}
-                                                    library={this.state.library} 
-                                                    checkPlayerInstance={this.checkPlayerInstance.bind(this)} />                                        
+                                        <div className="control-content">                                        
+                                            <PlayerControls 
+                                                targetPlayer={this.state.targetPlayer}
+                                                volume={this.state.volume }
+                                                switchPlayer={this.switchPlayer.bind(this)}
+                                                handleVolumeChange = {this.handleVolumeChange.bind(this)} />
+                                            <NowPlaying
+                                                library={this.state.library} 
+                                                checkPlayerInstance={this.checkPlayerInstance.bind(this)} 
+                                                handleSeekChange={this.handleSeekChange.bind(this)}/>                                        
                                         </div>    
                                     </div>
+
                                 </SwipeableDrawer>   
                                 
-                                    { this.state.library.genres ?
-                                        <div className="the-rest">
-                                            <GenreMenu 
-                                                screenWidth={this.state.screenWidth}
-                                                playerInstance={this.state.playerInstance}
-                                                library={this.state.library} 
-                                                checkPlayerInstance={this.checkPlayerInstance.bind(this)}
-                                            />
-                                        </div>
+                                { this.state.library.genres ?
+                                    <div className="the-rest">
+                                        <GenreMenu 
+                                            library={this.state.library}
+                                            screenWidth={this.state.screenWidth}
+                                            checkPlayerInstance={this.checkPlayerInstance.bind(this)}
+                                        />
+                                    </div>
                                     : <div></div>
-                                    }
+                                }
+
                                 { this.state.drawerButton ?
                                     <Button onClick={ () => { this.toggleDrawer('top', true)} } className="drawer-button">
                                         <img className={"btn-icon"} src={"./html/52558-200.png"}/>
@@ -209,12 +209,11 @@ class App extends React.Component {
                             <CircularProgress />
                         </div>
                         }                      
-                    </div>  
+                    </div> 
+            </ServerContext.Provider>
         );
     }
 }
-
-
 render ( 
     <App />,
     document.getElementById('target')

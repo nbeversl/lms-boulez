@@ -1,10 +1,12 @@
 import * as React from "react";
 import Button from '@material-ui/core/Button';
-import { ComposerList } from './Classical';
+import ArtistComposerList from './ArtistComposerList';
 import AlbumGrid from './AlbumGrid';
 import { BPMView } from './views';
-import { SearchBar, SearchResults } from './Search';
 import ScrollUpButton from "react-scroll-up-button";
+import ServerContext from './ServerContext';
+import SearchResults from './SearchResults';
+import SearchBar from './SearchBar';
 
 class GenreMenu extends React.Component {
     constructor(props) {
@@ -25,7 +27,7 @@ class GenreMenu extends React.Component {
     handleGenreChange(e) {
         
         var genreSelected = e.currentTarget.value;
-        this.props.library.getAllTitlesforGenre( this.props.library.genres[genreSelected].id, () => {
+        this.props.library.getAllAlbumsforGenre( this.props.library.genres[genreSelected].id, () => {
             this.setState({
                 genreSelected: genreSelected,
                 view: 'grid',
@@ -102,54 +104,48 @@ class GenreMenu extends React.Component {
             case("composer-list"):
 
                 var view = this.state.genreSelected ?
-                        <ComposerList 
-                            albumList={this.props.library.genres[this.state.genreSelected].albums} 
-                            playerInstance={this.props.playerInstance}
-                            library={this.props.library}
-                            checkPlayerInstance={this.props.checkPlayerInstance}
+                      
+                    <ServerContext.Consumer>
+                        { (library) => ( 
+                            <ArtistComposerList 
+                                albumList={this.props.library.genres[this.state.genreSelected].albums} 
+                                checkPlayerInstance={this.props.checkPlayerInstance}
                             />
-                        :
-                        <div>Select a Genre</div>;
-                        break;
+                        )}
+                    </ServerContext.Consumer>
+                :
+                    <div>Select a Genre</div>;
+                       
+                break;
                 
             case('grid'):
 
                 var view =  this.state.genreSelected ?
-                                    <AlbumGrid 
-                                        screenWidth={this.props.screenWidth}
-                                        library={this.props.library}
-                                        
-                                        /* List is from the pre-built library list for the selected genre */
-                                        albumList={this.props.library.genres[this.state.genreSelected].albums}                                 
-                                        genre={this.state.genreSelected} 
-                                        clickHandler={this.handleAlbumChange}
-                                        playerInstance={this.props.playerInstance}
-                                        checkPlayerInstance={this.props.checkPlayerInstance}
-
-                                    />
-                                :
-                                <div>Select a Genre</div>
+                        <AlbumGrid 
+                            screenWidth={this.props.screenWidth}
+                            albumList={this.props.library.genres[this.state.genreSelected].albums}                                 
+                            genre={this.state.genreSelected} 
+                            clickHandler={this.handleAlbumChange}
+                            checkPlayerInstance={this.props.checkPlayerInstance} />
+                    :
+                    <div>Select a Genre</div>
                     break;
             
             case('bpm'):
                 
                 var view = <BPMView 
                             library={this.props.library}
-                            playerInstance={this.props.playerInstance}
-                            />
+                            playerInstance={this.props.playerInstance} />
                 break;
 
             case('search'):
 
                 var view =  <SearchResults 
                                 screenWidth={this.props.screenWidth}
-                                library={this.props.library}
-                                playerInstance={this.props.playerInstance}
                                 searchResultsAlbums={this.state.searchResultsAlbums}
                                 searchResultsTracks={this.state.searchResultsTracks}
                                 searchResultsContributors={this.state.searchResultsContributors}
-                                checkPlayerInstance={this.props.checkPlayerInstance}
-                          />
+                                checkPlayerInstance={this.props.checkPlayerInstance}/>
         }
         
 
@@ -163,10 +159,9 @@ class GenreMenu extends React.Component {
                 <ViewSelector 
                     handleChange={this.handleViewChange.bind(this)} 
                     showDrawer={this.props.showDrawer}
-                    searchFor={this.searchFor.bind(this)}
-                />
-
+                    searchFor={this.searchFor.bind(this)}/>
                 {view}
+
                 <ScrollUpButton />
             
             </div>
