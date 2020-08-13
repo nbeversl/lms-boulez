@@ -7,6 +7,7 @@ import ServerContext from './ServerContext';
 class NowPlaying extends React.Component {
     
     render() {
+     
         return( 
             <ServerContext.Consumer>
 
@@ -14,6 +15,7 @@ class NowPlaying extends React.Component {
                     <div>
                         {   playerStatus 
                             && playerStatus.playlist_loop 
+                            && playerStatus.playlist_cur_index
                             && playerStatus.playlist_loop[parseInt(playerStatus.playlist_cur_index)] ? 
                             <div>
                                 <div className="now-playing">
@@ -32,9 +34,10 @@ class NowPlaying extends React.Component {
 
                                     <div className="now-playing-album-cover">
                                         <Album
-                                            album={library.albums[playerStatus.playlist_loop[parseInt(playerStatus.playlist_cur_index)].album_id]}
+                                            fromAlbumID={playerStatus.playlist_loop[parseInt(playerStatus.playlist_cur_index)].album_id}
                                             modal={true}
                                             checkPlayerInstance={this.checkPlayerInstance}
+                                            library={library}
                                         />
                                     </div>   
                                 </div>

@@ -8,8 +8,6 @@ import { PlayerControls } from './PlayerControls';
 import { LMSLibrary } from './Library';
 import { BrowserPlayer } from './BrowserPlayer';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import Button from '@material-ui/core/Button';
 import NowPlaying from './NowPlaying';
 import ServerContext from './ServerContext';
 
@@ -28,11 +26,6 @@ class App extends React.Component {
             fullscreen: false,
             lastScrollTop :0,
             screenWidth: null,           
-            drawer:false,
-            drawerButton: true,
-            drawerVariant : 'temporary',
-
-
         }
 
        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
@@ -70,7 +63,11 @@ class App extends React.Component {
             }
         }, 2500);
 
-        this.setState({library : new LMSLibrary() });
+        var l = new LMSLibrary();
+        l.establishLibrary( (library) => {
+            this.setState({library : library});
+        })
+ 
         window.addEventListener('resize', this.updateWindowDimensions );
         this.updateWindowDimensions();
             
@@ -79,7 +76,6 @@ class App extends React.Component {
     updateWindowDimensions() {
         this.setState({ 
             screenWidth: screen.width,
-            drawerVariant : screen.width > 320 ? 'permanent' : 'temporary',
         });
       }
 
@@ -103,22 +99,19 @@ class App extends React.Component {
             targetPlayer: e.target.value,
             playerInstance : newPlayer,
         });
-       
     }
     
     checkPlayerInstance(callback) {
-
         if (! this.state.playerInstance) {
-            this.setState({drawer: true });
             this.waitForPlayerInstance(callback);
         } else {
-            callback();
+            callback(this.state.playerInstance);
+
         }
     }
 
     waitForPlayerInstance(callback) {  
         setTimeout( () => {
-            if ( ! this.state.drawer )  { return }
             if ( this.state.playerInstance) {
                callback();
             } else {
@@ -136,57 +129,39 @@ class App extends React.Component {
         this.setState({volume:newValue});
         this.state.playerInstance.setVolume( newValue );
     }
-
-    toggleDrawer (anchor, open) {
-        if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-          return;
-        }
-        this.setState({drawer: open, drawerButton: !open });
-      };
     
     render ()  {      
         var globals = {
-            currentPlayer: this.state.currentPlayer,
+            currentPlayer: this.state.targetPlayer,
             playerInstance: this.state.playerInstance,
             library: this.state.library,
             serverStatus: this.state.serverStatus,
             playerStatus : this.state.playerStatus,
         }
-        
         return (
             <ServerContext.Provider value={globals}>
                 <div>
                     <meta name="viewport" content="width=device-width,initial-scale=1"></meta>
-                        { this.state.serverStatus ?
+                        { this.state.serverStatus && this.state.library ?
                             <div>
-                                <SwipeableDrawer
-                                    disableSwipeToOpen={false}
-                                    anchor={'top'}
-                                    open={this.state.drawer}
-                                    onClose={() => this.toggleDrawer('top',false)}
-                                    onOpen={() => this.toggleDrawer('top',true)}>
-                                                                
-                                    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"/>
-
-                                    <div className="control-bar">
-                                        <div className="control-content">                                        
-                                            <PlayerControls 
-                                                targetPlayer={this.state.targetPlayer}
-                                                volume={this.state.volume }
-                                                switchPlayer={this.switchPlayer.bind(this)}
-                                                handleVolumeChange = {this.handleVolumeChange.bind(this)} />
-                                            <NowPlaying
-                                                library={this.state.library} 
-                                                checkPlayerInstance={this.checkPlayerInstance.bind(this)} 
-                                                handleSeekChange={this.handleSeekChange.bind(this)}/>                                        
-                                        </div>    
-                                    </div>
-
-                                </SwipeableDrawer>   
-                                
+                                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"/>
+                                <div className="control-bar">
+                                    <div className="control-content">                                        
+                                        <PlayerControls 
+                                            targetPlayer={this.state.targetPlayer}
+                                            volume={this.state.volume}
+                                            switchPlayer={this.switchPlayer.bind(this)}
+                                            handleVolumeChange = {this.handleVolumeChange.bind(this)} />
+                                        
+                                        <NowPlaying
+                                            checkPlayerInstance={this.checkPlayerInstance.bind(this)} 
+                                            handleSeekChange={this.handleSeekChange.bind(this)}/>
+                                    </div>    
+                                </div>
                                 { this.state.library.genres ?
                                     <div className="the-rest">
                                         <GenreMenu 
+                                            genres={this.state.library.genres}
                                             library={this.state.library}
                                             screenWidth={this.state.screenWidth}
                                             checkPlayerInstance={this.checkPlayerInstance.bind(this)}
@@ -194,15 +169,7 @@ class App extends React.Component {
                                     </div>
                                     : <div></div>
                                 }
-
-                                { this.state.drawerButton ?
-                                    <Button onClick={ () => { this.toggleDrawer('top', true)} } className="drawer-button">
-                                        <img className={"btn-icon"} src={"./html/52558-200.png"}/>
-                                    </Button>
-                                    :
-                                    <div></div>
-                                }   
-                                </div> 
+                            </div> 
 
                         :
                         <div className="loading-message"> 

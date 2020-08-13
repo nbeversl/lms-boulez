@@ -23,7 +23,7 @@ class GenreMenu extends React.Component {
         }
         this.handleAlbumChange = this.handleAlbumChange.bind(this);
     }
-
+    
     handleGenreChange(e) {
         
         var genreSelected = e.currentTarget.value;
@@ -66,36 +66,7 @@ class GenreMenu extends React.Component {
          });
         
     }
-    componentDidMount() {
-        this.getGenres();
-    }
-
-    componentDidUpdate() {
-        this.getGenres();
-    }
-
-    getGenres() {
-        let genresTable = [];
-        Object.keys(this.props.library.genres).forEach( (genreName) => { 
-           
-            genresTable.push(
-                <Button   
-                    className={"genre-choice"}  
-                    key={genreName}
-                    value={genreName} 
-                    onClick={this.handleGenreChange.bind(this)} >
-                        {genreName}
-                </Button>
-            );
-            if (genresTable.length == Object.keys(this.props.library.genres).length) {
-               
-                if ( genresTable.length != this.state.genresTable.length ) {
-                    this.setState({genresTable : genresTable });        
-                }
-            }
-        });
-
-    }   
+    
 
     render() {
        
@@ -114,7 +85,7 @@ class GenreMenu extends React.Component {
                         )}
                     </ServerContext.Consumer>
                 :
-                    <div>Select a Genre</div>;
+                    <div></div>;
                        
                 break;
                 
@@ -128,7 +99,7 @@ class GenreMenu extends React.Component {
                             clickHandler={this.handleAlbumChange}
                             checkPlayerInstance={this.props.checkPlayerInstance} />
                     :
-                    <div>Select a Genre</div>
+                    <div></div>
                     break;
             
             case('bpm'):
@@ -148,22 +119,30 @@ class GenreMenu extends React.Component {
                                 checkPlayerInstance={this.props.checkPlayerInstance}/>
         }
         
-
+        var genresTable = [];
+        Object.getOwnPropertyNames(this.props.genres).forEach( (genreName) => {         
+            genresTable.push(
+                <Button   
+                    className={"genre-choice"}  
+                    key={genreName}
+                    value={genreName} 
+                    onClick={this.handleGenreChange.bind(this)} >
+                        {genreName}
+                </Button>
+            );
+        });
+                 
         return (
-            
             <div className="test">
                 <div className='genre-selector'>
-                    {this.state.genresTable}
+                    {genresTable}  
                 </div> 
-                
                 <ViewSelector 
                     handleChange={this.handleViewChange.bind(this)} 
                     showDrawer={this.props.showDrawer}
                     searchFor={this.searchFor.bind(this)}/>
                 {view}
-
                 <ScrollUpButton />
-            
             </div>
         )
     }

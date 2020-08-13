@@ -17,18 +17,22 @@ class Album extends React.Component {
             id : null,
             album: null,
         }
-        
     }
+
     componentDidMount () {
-        this.setState({
-            album : this.props.album,
-            id : this.props.album ? this.props.album.id : this.props.fromAlbumID,
-        });
+       
+        if ( ! this.props.album) {
+            this.props.library.getAlbumFromID(this.props.fromAlbumID, (album) => {
+                this.setState({ album:album });
+            });  
+        } else {
+            this.setState({ album : this.props.album });
+        }       
     }
 
     getMyTracks(library) {
  
-        library.getAlbumTracks( this.state.id, (result) => {
+        library.getAlbumTracks( this.state.album.id, (result) => {
             var discs = {};
             result.forEach( (track) => {
                 var disc = track.disc;
@@ -47,7 +51,6 @@ class Album extends React.Component {
         });
     }
 
-
     handleMouseLeave() {
         this.setState({ flipped : false  });
     }
@@ -64,7 +67,7 @@ class Album extends React.Component {
     }
 
     render() {   
-        var backgroundID = this.props.album ? this.props.album.artwork_track_id : this.props.fromTrackID;
+  
         var modalStyle = {
             width: "600px",
             height:600,
@@ -73,56 +76,56 @@ class Album extends React.Component {
         var backgroundImageStyle = {
             WebkitFilter: 'blur(10px) saturate(2) opacity(.3)',
             filter:'blur(10px) saturate(2) opacity(.3)',
-            background: this.props.album ? 'url("/music/'+backgroundID+'/cover.jpg")' : '',
+            background: this.state.album ? 'url("/music/'+this.state.album.artwork_track_id+'/cover.jpg")' : '',
         }
         var buttonStyle = {
             width: this.props.albumWidth,
             height: this.props.albumWidth,
         }
         return (
-        
             <ServerContext.Consumer>
                 { ( { playerInstance, library } )  => (
 
                     <div className="album">
+                        { this.state.album ? 
+                            <div style={buttonStyle}>                    
+                                <Button onClick={() => { this.handleOpen(library) }}>
+                                <div>
+                                    <div>{this.state.album.title}</div>
+                                        <img
+                                            src={"/music/"+this.state.album.artwork_track_id+"/cover.jpg"}
+                                            className={"album-image"}
+                                        />
 
-                        <div style={buttonStyle}>                    
-                            <Button onClick={() => { this.handleOpen(library) }}>
-                            <div>
-                                { ! backgroundID ? <div>{this.props.album.title}</div> : null }
-                                    <img
-                                        src={"/music/"+backgroundID+"/cover.jpg"}
-                                        className={"album-image"}
-                                    />
-
-                            </div>
-                                
-                            </Button>
-                            <Dialog
-                                TransitionComponent={Zoom}
-                                open={this.state.modalOpen}
-                                onBackdropClick= {this.handleClose.bind(this)} >
-                                <div style={modalStyle} >
-                                    { this.state.discs ?
-                                        <div>
-                                            <div> 
-                                                <TrackListScrolling      
-                                                    playerInstance={playerInstance} 
-                                                    discs = {this.state.discs}
-                                                    album = {this.state.id}
-                                                    checkPlayerInstance={this.props.checkPlayerInstance}
-                                                />
-                                            </div>
-                                            <div className={"album-background-image-wrapper"}>
-                                                <div className={"album-background-image"} style={ backgroundImageStyle } />    
-                                            </div>
-                                        </div>                                        
-                                        :
-                                        <div>hang on ...</div>
-                                    }                                
                                 </div>
-                            </Dialog>
-                        </div>
+                                </Button>
+                                <Dialog
+                                    TransitionComponent={Zoom}
+                                    open={this.state.modalOpen}
+                                    onBackdropClick= {this.handleClose.bind(this)} >
+                                    <div style={modalStyle} >
+                                        { this.state.discs ?
+                                            <div>
+                                                <div> 
+                                                    <TrackListScrolling      
+                                                        playerInstance={playerInstance} 
+                                                        discs = {this.state.discs}
+                                                        album = {this.state.id}
+                                                        checkPlayerInstance={this.props.checkPlayerInstance}
+                                                    />
+                                                </div>
+                                                <div className={"album-background-image-wrapper"}>
+                                                    <div className={"album-background-image"} style={ backgroundImageStyle } />    
+                                                </div>
+                                            </div>                                        
+                                            :
+                                            <div>hang on ...</div>
+                                        }                                
+                                    </div>
+                                </Dialog>
+                            </div>
+                        :<div></div>    
+                    }
                     </div>
                 )}
             

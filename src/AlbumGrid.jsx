@@ -26,7 +26,7 @@ class AlbumGrid extends React.Component {
                             <Album  
                                 screenWidth={this.props.screenWidth}
                                 albumWidth={this.state.albumWidth}
-                                album={album} 
+                                album={album}
                                 checkPlayerInstance={this.props.checkPlayerInstance}
                             />
                         </Grid>
