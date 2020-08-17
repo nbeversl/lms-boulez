@@ -4,8 +4,23 @@ import Button from '@material-ui/core/Button';
 import Zoom from '@material-ui/core/Zoom';
 import TrackListScrolling from './TrackListScrolling'
 import ServerContext from "./ServerContext";
+import { useContext } from 'react';
 
-class Album extends React.Component {
+function Album (props) {
+    const globals = useContext(ServerContext);
+
+    return <AlbumKnowingAboutLibrary 
+                library = {globals.library}
+                album={props.album}
+                fromAlbumID={props.fromAlbumID}
+                albumWidth={props.albumWidth}
+                screenWidth={props.screenWidth}
+                tempArt={props.tempArt}
+                checkPlayerInstance={globals.checkPlayerInstance}
+            />;
+}
+
+class AlbumKnowingAboutLibrary extends React.Component {
 
     constructor(props) {
         super(props)
@@ -20,7 +35,7 @@ class Album extends React.Component {
     }
 
     componentDidMount () {
-       
+
         if ( ! this.props.album) {
             this.props.library.getAlbumFromID(this.props.fromAlbumID, (album) => {
                 this.setState({ album:album });
@@ -30,9 +45,9 @@ class Album extends React.Component {
         }       
     }
 
-    getMyTracks(library) {
- 
-        library.getAlbumTracks( this.state.album.id, (result) => {
+    getMyTracks() {
+        
+        this.props.library.getAlbumTracks( this.state.album.id, (result) => {
             var discs = {};
             result.forEach( (track) => {
                 var disc = track.disc;
@@ -55,12 +70,10 @@ class Album extends React.Component {
         this.setState({ flipped : false  });
     }
 
-
     handleOpen(library) {        
         this.getMyTracks(library);
         this.setState({modalOpen : true});
     }
-
 
     handleClose() {
         this.setState({modalOpen : false});
@@ -76,27 +89,32 @@ class Album extends React.Component {
         var backgroundImageStyle = {
             WebkitFilter: 'blur(10px) saturate(2) opacity(.3)',
             filter:'blur(10px) saturate(2) opacity(.3)',
-            background: this.state.album ? 'url("/music/'+this.state.album.artwork_track_id+'/cover.jpg")' : '',
+            //background: this.state.album ? 'url("/music/'+this.state.album.artwork_track_id+'/cover.jpg")' : '',
+            background: this.state.album ? 'url("/music/'+this.props.tempArt+'/cover.jpg")' : '',
         }
         var buttonStyle = {
             width: this.props.albumWidth,
             height: this.props.albumWidth,
         }
+        
         return (
             <ServerContext.Consumer>
-                { ( { playerInstance, library } )  => (
+                { ( { playerInstance, library, checkPlayerInstance } )  => (
 
                     <div className="album">
                         { this.state.album ? 
                             <div style={buttonStyle}>                    
                                 <Button onClick={() => { this.handleOpen(library) }}>
                                 <div>
-                                    <div>{this.state.album.title}</div>
+                                    { this.state.album.artwork_track_id == undefined ? 
+                                        <div className="album-title-text">{this.state.album.album}</div>
+                                        :
+                                        <div></div>                            
+                                    }
                                         <img
                                             src={"/music/"+this.state.album.artwork_track_id+"/cover.jpg"}
                                             className={"album-image"}
                                         />
-
                                 </div>
                                 </Button>
                                 <Dialog
@@ -106,14 +124,12 @@ class Album extends React.Component {
                                     <div style={modalStyle} >
                                         { this.state.discs ?
                                             <div>
-                                                <div> 
-                                                    <TrackListScrolling      
-                                                        playerInstance={playerInstance} 
-                                                        discs = {this.state.discs}
-                                                        album = {this.state.id}
-                                                        checkPlayerInstance={this.props.checkPlayerInstance}
-                                                    />
-                                                </div>
+                                                <TrackListScrolling      
+                                                    playerInstance={playerInstance} 
+                                                    discs = {this.state.discs}
+                                                    album = {this.state.id}
+                                                    checkPlayerInstance={checkPlayerInstance}
+                                                />
                                                 <div className={"album-background-image-wrapper"}>
                                                     <div className={"album-background-image"} style={ backgroundImageStyle } />    
                                                 </div>

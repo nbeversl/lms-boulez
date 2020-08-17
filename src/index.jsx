@@ -21,11 +21,11 @@ class App extends React.Component {
             playerInstance : null,
             elapsedTime: 0,
             playerStatus : null,
-            volume: 0,
             library : null,
             fullscreen: false,
             lastScrollTop :0,
-            screenWidth: null,           
+            screenWidth: null, 
+            showNowPlaying : false,         
         }
 
        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
@@ -125,11 +125,10 @@ class App extends React.Component {
         this.setState({seek:newValue})
     }
 
-    handleVolumeChange (event, newValue ) {
-        this.setState({volume:newValue});
-        this.state.playerInstance.setVolume( newValue );
-    }
     
+    toggleNowPlaying() {
+        this.setState({showNowPlaying: ! this.state.showNowPlaying });
+    }
     render ()  {      
         var globals = {
             currentPlayer: this.state.targetPlayer,
@@ -137,6 +136,7 @@ class App extends React.Component {
             library: this.state.library,
             serverStatus: this.state.serverStatus,
             playerStatus : this.state.playerStatus,
+            checkPlayerInstance : this.checkPlayerInstance.bind(this),
         }
         return (
             <ServerContext.Provider value={globals}>
@@ -149,22 +149,23 @@ class App extends React.Component {
                                     <div className="control-content">                                        
                                         <PlayerControls 
                                             targetPlayer={this.state.targetPlayer}
-                                            volume={this.state.volume}
-                                            switchPlayer={this.switchPlayer.bind(this)}
-                                            handleVolumeChange = {this.handleVolumeChange.bind(this)} />
+                                            switchPlayer={this.switchPlayer.bind(this)}      
+                                            toggleNowPlaying={this.toggleNowPlaying.bind(this)}/>
+                                        { this.state.showNowPlaying ?      
+                                            <NowPlaying
+                                                handleSeekChange={this.handleSeekChange.bind(this)}/>
+                                            : <div></div>
+                                        }
                                         
-                                        <NowPlaying
-                                            checkPlayerInstance={this.checkPlayerInstance.bind(this)} 
-                                            handleSeekChange={this.handleSeekChange.bind(this)}/>
                                     </div>    
                                 </div>
+                                <div className="spacer"></div>
                                 { this.state.library.genres ?
                                     <div className="the-rest">
                                         <GenreMenu 
                                             genres={this.state.library.genres}
                                             library={this.state.library}
                                             screenWidth={this.state.screenWidth}
-                                            checkPlayerInstance={this.checkPlayerInstance.bind(this)}
                                         />
                                     </div>
                                     : <div></div>

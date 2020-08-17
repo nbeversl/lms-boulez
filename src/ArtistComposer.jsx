@@ -16,7 +16,6 @@ class ArtistComposer extends React.Component {
                     <Card.Body>
                     <AlbumGrid
                         albumList={this.props.albumList} 
-                        checkPlayerInstance={this.props.checkPlayerInstance}
                         />
                     </Card.Body>
                 </Accordion.Collapse>

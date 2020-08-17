@@ -5,9 +5,7 @@ import Album from './Album';
 import { useContext } from 'react';
 import ServerContext from "./ServerContext";
 
-
 function AlbumFromID (id, tempArt) {
-    console.log(tempArt);
     const globals = useContext(ServerContext);
     var album = globals.library.getAlbumFromID(id);
     return <Album tempArt={id} album={album}></Album>
@@ -41,7 +39,6 @@ class TrackWithSourceAlbum extends React.Component {
 
                         <div className="tracklist-album">                   
                             <Album
-                                fromTrackID={track.id}
                                 fromAlbumID={track.album_id} 
                                 checkPlayerInstance={this.props.checkPlayerInstance}
                             />

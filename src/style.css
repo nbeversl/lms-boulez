@@ -1,13 +1,18 @@
 #target, .control-content {
-    width:98%;
-    max-width:98%;
+    width:100%;
+    max-width:100%;
     margin: 0 auto;
 }
-.player-controls {
+.player-bar {
     margin-top: 10px;
     margin-bottom: 10px;
-    width:100%;
+    width:98%;
+    margin-left:1%;
     display: inline-block;
+}
+.player-controls {
+    display:inline-block;
+    width:auto;
 }
 .grid-tracklist {
     font-size:10px;
@@ -15,7 +20,15 @@
     z-index:100;
     margin:2em 2em 2em 2em;
 }
-
+.main-album-grid {
+    margin: 0 auto;
+    width:95%;
+}
+.album-title-text {
+    position:relative;
+    height:0px;
+    top:20px;
+}
 .album-background-image {
     width:100%;
     height:570px;
@@ -52,15 +65,35 @@
 .album-cover {
     overflow:hidden;
 }
-
-.the-rest {
-    margin-top:10px;
-    
+.view-and-genre-selector {
+    width: 98%;
+    margin: 0 auto;
+}
+.control-bar {
+    position:fixed;
+    z-index:100;
+    top:0;
+    width:100%;
+    background-color:white;
+    border-bottom: solid;
+    border-width:.5px;
+    border-color: #a5a0a0;
+}
+.now-playing {
+    width:90%;
+    margin: 0 auto;
+}
+.MuiDrawer-paperAnchorDockedTop {
+    margin-top:90px;
+}
+.spacer {
+    height:120px;
+    display:block;
+    width:100%;
 }
 .genre-selector {
-    margin-bottom:25px;
+    margin-bottom:15px;
     font-size:40px !important;
-    margin-right:35px;
 }
 button.genre-choice, button.search-button {
     text-transform: none;
@@ -75,7 +108,10 @@ button.genre-choice, button.search-button {
     background-color: #dcdcdc;
     border-radius: 5px;
 }
-
+.view-and-search-selector hr {
+    margin-top:.4rem;
+    margin-bottom:.4rem;
+}
 .codec {
     color: grey;
     padding: 0 10px 0 10px;
@@ -91,6 +127,9 @@ button.genre-choice, button.search-button {
 }
 .MuiButton-root {
     min-width:40px !important;
+}
+.MuiButton-root.player-control-button {
+    margin-bottom:20px;
 }
 .track-title {
     font-size: 14px;
@@ -133,6 +172,8 @@ button.genre-choice, button.search-button {
     display:inline-block;
     float:right;
     transition: 0.2s;
+    position:relative;
+    bottom: 70px;
 }
 .track-info {
     display:inline-block;
@@ -184,17 +225,35 @@ button.genre-choice, button.search-button {
 }
 @media only screen and (max-width:500px) {
     
-        
-    
+        .player-bar {
+            margin-bottom:0px;
+        }
+        .main-album-grid {
+            width:98%;
+        }
+        .btn-icon {
+            height:20px;
+        }
        .genre-selector {
            font-size:50px !important;
-          
+       }
+       .slider-volume .MuiSlider-root {
+            padding-top:5px;
+            padding-bottom:5px;
+       }
+       .player-selector .MuiOutlinedInput-input {
+            padding-top:10px;
+            padding-bottom:10px;
        }
 
+       .MuiButton-root.player-control-button {
+            margin-bottom:0px;
+        }
        .now-playing {
            font-size:12px;
            margin-top:1em;
-           width:100%
+           width:98%;
+           margin: 0 auto;
        }
        .now-playing-album-cover {
            width:100px;
@@ -205,7 +264,7 @@ button.genre-choice, button.search-button {
             margin-right:4px;
          }
          .slider-volume {
-             width:90%;
+             width:60%;
          }
          .loading-text {
 

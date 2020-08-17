@@ -45,8 +45,7 @@ class TrackWithSourceAlbum extends React.Component {
         this.props.tracks.forEach( (track) => {
 
             List.push( 
-                <div key={track.id} className="list-track">
-                            
+                 <div key={track.id} className="list-track">            
                         <div className="track-info">
                             <span> {track.title} </span> 
                             <div className="codec">
@@ -65,13 +64,10 @@ class TrackWithSourceAlbum extends React.Component {
                         <div className="tracklist-album">                   
                             <Album 
                                 id={track.album_id} 
-                                library={this.props.library} 
                                 art={track.artwork_track_id}
                                 checkPlayerInstance={this.props.checkPlayerInstance}
-                                playerInstance={this.props.playerInstance}
                             />
                         </div>   
-
                  </div>
             );
         });

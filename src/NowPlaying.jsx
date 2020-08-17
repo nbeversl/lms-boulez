@@ -19,7 +19,6 @@ class NowPlaying extends React.Component {
                             && playerStatus.playlist_loop[parseInt(playerStatus.playlist_cur_index)] ? 
                             <div>
                                 <div className="now-playing">
-                                    
                                     <div className="now-playing-meta">
                                         <div className="now-playing-artist">{playerStatus.playlist_loop[parseInt(playerStatus.playlist_cur_index)].artist}</div> 
                                         <div className="now-playing-album-title">{playerStatus.playlist_loop[parseInt(playerStatus.playlist_cur_index)].album}</div>
@@ -36,8 +35,6 @@ class NowPlaying extends React.Component {
                                         <Album
                                             fromAlbumID={playerStatus.playlist_loop[parseInt(playerStatus.playlist_cur_index)].album_id}
                                             modal={true}
-                                            checkPlayerInstance={this.checkPlayerInstance}
-                                            library={library}
                                         />
                                     </div>   
                                 </div>

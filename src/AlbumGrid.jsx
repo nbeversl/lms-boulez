@@ -7,7 +7,7 @@ class AlbumGrid extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            albumWidth: this.props.screenWidth > 600 ? 300 : 90,
+            albumWidth: this.props.screenWidth > 600 ? 250 : 90,
         }
      }
     
@@ -32,10 +32,12 @@ class AlbumGrid extends React.Component {
                         </Grid>
                 )});
         return (
-            <div>
+            <div className="main-album-grid">
                 <a name="albums"></a>
-                <Slider min={40} max={300} defaultValue={this.props.screenWidth > 600 ? 300 : 90}  onChange={this.adjustWidth.bind(this)} />
+                <Slider min={40} max={300} defaultValue={this.props.screenWidth > 600 ? 250 : 90}  onChange={this.adjustWidth.bind(this)} />
                 <Grid 
+                    alignContent={'flex-start'}
+                    justify={'center' }
                     container 
                     spacing={this.props.screenWidth > 600 ? 3 : 1 }>
                     {List}

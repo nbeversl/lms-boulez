@@ -17,13 +17,10 @@ class AlbumList extends React.Component {
                                 id={this.props.list[id].id}
                                 clickHandler={this.props.clickHandler}
                                 art={this.props.list[id].artwork_track_id}
-                                checkPlayerInstance={this.props.checkPlayerInstance}
                             />
                             <TrackList 
                                 playerInstance={this.props.playerInstance} 
                                 albumID={this.props.list[id].id}
-                                library={this.props.library}
-                                checkPlayerInstance={this.props.checkPlayerInstance}
                             />
                         </Card.Body>
                               

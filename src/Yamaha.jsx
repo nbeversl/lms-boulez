@@ -38,7 +38,7 @@ class Yamaha {
                 this.ready = true;
             });
             }
-        
+        w
         this.getInputs = () => {
             var result = this.APICall('<YAMAHA_AV cmd="GET"><Main_Zone><Input><Input_Sel_Item>GetParam</Input_Sel_Item></Input></Main_Zone></YAMAHA_AV>',
             (xmlDoc) => {

@@ -67,7 +67,6 @@ class GenreMenu extends React.Component {
         
     }
     
-
     render() {
        
         switch(this.state.view) {
@@ -80,7 +79,6 @@ class GenreMenu extends React.Component {
                         { (library) => ( 
                             <ArtistComposerList 
                                 albumList={this.props.library.genres[this.state.genreSelected].albums} 
-                                checkPlayerInstance={this.props.checkPlayerInstance}
                             />
                         )}
                     </ServerContext.Consumer>
@@ -92,31 +90,40 @@ class GenreMenu extends React.Component {
             case('grid'):
 
                 var view =  this.state.genreSelected ?
-                        <AlbumGrid 
-                            screenWidth={this.props.screenWidth}
-                            albumList={this.props.library.genres[this.state.genreSelected].albums}                                 
-                            genre={this.state.genreSelected} 
-                            clickHandler={this.handleAlbumChange}
-                            checkPlayerInstance={this.props.checkPlayerInstance} />
+                        <div>
+                            <AlbumGrid 
+                                screenWidth={this.props.screenWidth}
+                                albumList={this.props.library.genres[this.state.genreSelected].albums}                                 
+                                genre={this.state.genreSelected} 
+                                clickHandler={this.handleAlbumChange} />
+                            <ScrollUpButton />
+                        </div>
                     :
                     <div></div>
                     break;
             
             case('bpm'):
                 
-                var view = <BPMView 
-                            library={this.props.library}
-                            playerInstance={this.props.playerInstance} />
+                var view = <div>
+                                <BPMView 
+                                    library={this.props.library}
+                                    playerInstance={this.props.playerInstance} />
+                                <ScrollUpButton />
+                            </div>
+                            
                 break;
 
             case('search'):
 
-                var view =  <SearchResults 
-                                screenWidth={this.props.screenWidth}
-                                searchResultsAlbums={this.state.searchResultsAlbums}
-                                searchResultsTracks={this.state.searchResultsTracks}
-                                searchResultsContributors={this.state.searchResultsContributors}
-                                checkPlayerInstance={this.props.checkPlayerInstance}/>
+                var view =  <div>
+                                <SearchResults 
+                                    screenWidth={this.props.screenWidth}
+                                    library={this.state.library}
+                                    searchResultsAlbums={this.state.searchResultsAlbums}
+                                    searchResultsTracks={this.state.searchResultsTracks}
+                                    searchResultsContributors={this.state.searchResultsContributors} />
+                                <ScrollUpButton />
+                            </div>
         }
         
         var genresTable = [];
@@ -133,7 +140,7 @@ class GenreMenu extends React.Component {
         });
                  
         return (
-            <div className="test">
+            <div className="view-and-genre-selector">
                 <div className='genre-selector'>
                     {genresTable}  
                 </div> 
@@ -142,7 +149,6 @@ class GenreMenu extends React.Component {
                     showDrawer={this.props.showDrawer}
                     searchFor={this.searchFor.bind(this)}/>
                 {view}
-                <ScrollUpButton />
             </div>
         )
     }
@@ -152,7 +158,8 @@ class ViewSelector extends React.Component {
     render() {
 
         return (
-            <div ><hr/>
+            <div className="view-and-search-selector">
+                <hr/>
                 <Button onClick={() => this.props.handleChange('grid')}>Grid</Button>
                 <Button onClick={() => this.props.handleChange('composer-list')}>Composer/Artist</Button>
                 <Button onClick={() => this.props.handleChange('bpm')}>BPM</Button>

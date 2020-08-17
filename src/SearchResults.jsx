@@ -4,6 +4,7 @@ import AlbumGrid  from './AlbumGrid';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ServerContext from "./ServerContext";
 
 class SearchResults extends React.Component {
 
@@ -15,38 +16,43 @@ class SearchResults extends React.Component {
   
     render() {
         return (
-            <div>
-                <a href="#tracks">Tracks</a><a href="#artists">Artists/Contributors</a>
-                { this.props.searchResultsAlbums ?
-                    
-                    <AlbumGrid
-                        albumList={this.props.searchResultsAlbums}
-                        screenWidth={this.props.screenWidth}
-                        checkPlayerInstance={this.props.checkPlayerInstance}
-                        >
-                    </AlbumGrid>
-                    :
-                    <div>No Albums found</div>
-                }
-                { this.props.searchResultsTracks ?
-                
-                    <TrackWithSourceAlbum 
-                        tracks={this.props.searchResultsTracks} 
-                        checkPlayerInstance={this.props.checkPlayerInstance}
-                    />
-                    :
-                    <div>No Tracks Found</div>
-                }   
-                { this.props.searchResultsContributors ? 
+            <ServerContext.Consumer> 
+                { ( { playerInstance, library } )  => (
+                    <div>
+                        <a href="#tracks">Tracks</a><a href="#artists">Artists/Contributors</a>
+                        { this.props.searchResultsAlbums ?
+                            
+                            <AlbumGrid
+                                albumList={this.props.searchResultsAlbums}
+                                screenWidth={this.props.screenWidth}
+                                checkPlayerInstance={this.props.checkPlayerInstance}
+                                >
+                            </AlbumGrid>
+                            :
+                            <div>No Albums found</div>
+                        }
+                        { this.props.searchResultsTracks ?
+                        
+                            <TrackWithSourceAlbum 
+                                tracks={this.props.searchResultsTracks} 
+                                checkPlayerInstance={this.props.checkPlayerInstance}
+                            />
+                            :
+                            <div>No Tracks Found</div>
+                        }   
+                        { this.props.searchResultsContributors ? 
 
-                    <ArtistList 
-                        artists={this.props.searchResultsContributors} 
-                        checkPlayerInstance={this.props.checkPlayerInstance}
-                    />
-                    :
-                    <div>No Contributors Found</div>
-                } 
-            </div>
+                            <ArtistList 
+                                library={library}
+                                artists={this.props.searchResultsContributors} 
+                                checkPlayerInstance={this.props.checkPlayerInstance}
+                            />
+                            :
+                            <div>No Contributors Found</div>
+                        } 
+                    </div>
+                )}
+            </ServerContext.Consumer>
         )
     }
 }
@@ -92,8 +98,6 @@ class ArtistList extends React.Component {
                             <AccordionDetails> 
                                 <AlbumGrid 
                                     albumList={this.state.albums[artistID]}
-                                    library={this.props.library}
-                                    playerInstance={this.props.playerInstance}
                                     checkPlayerInstance={this.props.checkPlayerInstance}
                                     >
                                 </AlbumGrid>
@@ -105,9 +109,7 @@ class ArtistList extends React.Component {
                     { this.state.tracks[artistID] ? 
                         <TrackWithSourceAlbum 
                             tracks={this.state.tracks[artistID]} 
-                            playerInstance={this.props.playerInstance}
                             checkPlayerInstance={this.props.checkPlayerInstance}
-                            library={this.props.library}
                     />
                     :
                         <div>No Tracks Found</div>
