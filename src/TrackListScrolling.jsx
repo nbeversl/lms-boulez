@@ -44,7 +44,6 @@ class TrackListScrolling extends React.Component {
                                     disc={disc}
                                     track={track}
                                     trackNumber={trackNumber}
-                                    serverID={serverID}
                                     playTrack={this.playTrack.bind(this)}
                                 />
                         );

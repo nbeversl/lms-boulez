@@ -43,11 +43,13 @@ class AlbumKnowingAboutLibrary extends React.Component {
         } else {
             this.setState({ album : this.props.album });
         }       
+        
     }
 
     getMyTracks() {
         
         this.props.library.getAlbumTracks( this.state.album.id, (result) => {
+            console.log(result);
             var discs = {};
             result.forEach( (track) => {
                 var disc = track.disc;
