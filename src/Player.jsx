@@ -48,7 +48,6 @@ class Player {
             var albumTitle = track.album;
             LMSRequest([this.address,["playlist","clear"]],(r) => {                
                 LMSRequest([this.address,["playlist", "loadalbum",'*', '*', albumTitle]], (r) => {
-                    console.log(r);
                     LMSRequest([this.address,["playlist", "index",'+'+startNumber.toString()]]);
                 });
             });
