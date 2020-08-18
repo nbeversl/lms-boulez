@@ -8,7 +8,6 @@ class TrackListScrolling extends React.Component {
    playTrack(disc, trackNumber) {
         var that = this;
         this.props.checkPlayerInstance( (playerInstance) => {
-
             playerInstance.playAlbumFromTrackAndContinue(
                 that.props.discs[disc][0], // disc doesn't matter, only passes the album ID 
                 trackNumber)    

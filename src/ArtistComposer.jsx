@@ -22,7 +22,6 @@ class ArtistComposer extends React.Component {
             </Card>
         );
     }
-
 }
 
 export default ArtistComposer;

@@ -224,7 +224,9 @@ button.genre-choice, button.search-button {
     border-width: 1px;
 }
 @media only screen and (max-width:500px) {
-    
+    .player-controls {
+        width:60%;
+    }
         .player-bar {
             margin-bottom:0px;
         }
@@ -248,6 +250,8 @@ button.genre-choice, button.search-button {
 
        .MuiButton-root.player-control-button {
             margin-bottom:0px;
+            padding:2px;
+
         }
        .now-playing {
            font-size:12px;

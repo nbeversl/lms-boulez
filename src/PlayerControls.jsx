@@ -30,9 +30,12 @@ class PlayerControls extends React.Component {
                         <div className="player-bar">
                             <div className={"player-selector"}>
                                 <PlayerSelector 
+                                    open={this.props.selectOpen}
                                     players={serverStatus.players_loop} 
                                     selectedPlayer={this.props.targetPlayer}
-                                    onSelect={this.props.switchPlayer.bind(this)}
+                                    onSelect={this.props.switchPlayer}
+                                    openSelect={this.props.openSelect}
+                                    closeSelect={this.props.closeSelect}
                                 />
                             </div>
                         { playerInstance ? 
@@ -56,20 +59,24 @@ class PlayerControls extends React.Component {
                                 <Button className="player-control-button" href="/settings/index.html" target="sc_settings">
                                     <img className={"btn-icon"} src={"./html/settings.png"} />
                                 </Button>
-                                <div className={"slider-volume"}>
-                                    
-                                    <Slider
-                                        value={this.state.volume}
-                                        onChange={ (event, newValue) => { 
-                                            this.setState({volume:newValue});
-                                            playerInstance.setVolume( newValue );
-                                            } } />
-                                    <Typography variant="caption">Server Volume</Typography>
-                                </div> 
                                 
-                                    <Button onClick={this.toggleNowPlaying.bind(this)}>
-                                    N
-                                    </Button>
+                            
+                                <Button onClick={this.toggleNowPlaying.bind(this)}>
+                                N
+                                </Button>
+                            </div>
+                           
+                        :   <div></div>
+                        }    
+                        { playerInstance ? 
+                              <div className={"slider-volume"}>
+                                <Slider
+                                    value={this.state.volume}
+                                    onChange={ (event, newValue) => { 
+                                        this.setState({volume:newValue});
+                                        playerInstance.setVolume( newValue );
+                                        } } />
+                                <Typography variant="caption">Server Volume</Typography>
                             </div>
                             : <div></div>
                         }
@@ -82,7 +89,7 @@ class PlayerControls extends React.Component {
 
 
 class PlayerSelector extends React.Component {
-    
+
     render() {
         
         var Players = [ ];
@@ -101,14 +108,17 @@ class PlayerSelector extends React.Component {
         return (
           <div>
               <FormControl variant="outlined">
-              <InputLabel id="demo-simple-select-disabled-label">Player</InputLabel>
-                <Select
-                    className="player-selector"
-                    label="Player"                     
-                    onChange={(e) => this.props.onSelect(e)}
-                    value={this.props.selectedPlayer ? this.props.selectedPlayer : "Select"}>
-                    {Players}
-                </Select>
+                <InputLabel id="demo-simple-select-disabled-label">Player</InputLabel>
+                    <Select
+                        open={this.props.open}
+                        className="player-selector"
+                        label="Player"
+                        onOpen={this.props.openSelect}
+                        onClose={this.props.closeSelect}
+                        onChange={(e) => this.props.onSelect(e)}
+                        value={this.props.selectedPlayer || ""}>
+                        {Players}
+                    </Select>
             </FormControl>
         </div>
        

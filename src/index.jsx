@@ -26,6 +26,7 @@ class App extends React.Component {
             lastScrollTop :0,
             screenWidth: null, 
             showNowPlaying : false,         
+            selectOpen: false,
         }
 
        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
@@ -88,8 +89,16 @@ class App extends React.Component {
         }
       }
 
-    switchPlayer(e) {
+    openSelect() {
+    
+        this.setState({selectOpen : true});
+    }
+    closeSelect() {
+        this.setState({selectOpen : false});
+    }
 
+    switchPlayer(e) {
+        this.setState({selectOpen : true});
         if (e.target.value != 'browser') {
             var newPlayer = new Player(e.target.value);
         } else {
@@ -98,22 +107,24 @@ class App extends React.Component {
         this.setState({
             targetPlayer: e.target.value,
             playerInstance : newPlayer,
+            selectOpen : false        
         });
     }
     
     checkPlayerInstance(callback) {
+
         if (! this.state.playerInstance) {
+            this.setState({selectOpen : true});
             this.waitForPlayerInstance(callback);
         } else {
             callback(this.state.playerInstance);
-
         }
     }
 
     waitForPlayerInstance(callback) {  
         setTimeout( () => {
             if ( this.state.playerInstance) {
-               callback();
+                callback(this.state.playerInstance);
             } else {
                 this.waitForPlayerInstance(callback);
             }
@@ -125,7 +136,6 @@ class App extends React.Component {
         this.setState({seek:newValue})
     }
 
-    
     toggleNowPlaying() {
         this.setState({showNowPlaying: ! this.state.showNowPlaying });
     }
@@ -148,6 +158,9 @@ class App extends React.Component {
                                 <div className="control-bar">
                                     <div className="control-content">                                        
                                         <PlayerControls 
+                                            selectOpen={this.state.selectOpen}
+                                            closeSelect={this.closeSelect.bind(this)}
+                                            openSelect={this.openSelect.bind(this)}
                                             targetPlayer={this.state.targetPlayer}
                                             switchPlayer={this.switchPlayer.bind(this)}      
                                             toggleNowPlaying={this.toggleNowPlaying.bind(this)}/>
