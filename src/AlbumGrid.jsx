@@ -34,7 +34,9 @@ class AlbumGrid extends React.Component {
         return (
             <div className="main-album-grid">
                 <a name="albums"></a>
-                <Slider min={40} max={300} defaultValue={this.props.screenWidth > 600 ? 250 : 90}  onChange={this.adjustWidth.bind(this)} />
+                <div className="album-size-slider">
+                    cover size <Slider min={40} max={300} defaultValue={this.props.screenWidth > 600 ? 250 : 90}  onChange={this.adjustWidth.bind(this)} />
+                </div>
                 <Grid 
                     alignContent={'flex-start'}
                     justify={'center' }

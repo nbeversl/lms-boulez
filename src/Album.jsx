@@ -131,6 +131,7 @@ class AlbumKnowingAboutLibrary extends React.Component {
                                                     discs = {this.state.discs}
                                                     album = {this.state.id}
                                                     checkPlayerInstance={checkPlayerInstance}
+                                                    addToPlaylist={playerInstance ? playerInstance.addTrack : null}
                                                 />
                                                 <div className={"album-background-image-wrapper"}>
                                                     <div className={"album-background-image"} style={ backgroundImageStyle } />    

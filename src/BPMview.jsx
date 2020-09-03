@@ -1,8 +1,21 @@
 import * as React from "react";
 import Button from '@material-ui/core/Button';
-import { clear } from "console";
+import ServerContext from "./ServerContext";
+import { useContext } from 'react';
 
-class BPMView extends React.Component {
+
+function BPMView (props) {
+    const globals = useContext(ServerContext);
+
+    return <BPMViewNaive 
+                library = {globals.library}
+                checkPlayerInstance={globals.checkPlayerInstance}
+                playerInstance={globals.playerInstance}
+            />;
+}
+
+
+class BPMViewNaive extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -15,6 +28,7 @@ class BPMView extends React.Component {
 
     componentDidMount() {
 
+        this.props.library.getAllTracksForGenre(12);
         var selections = [];
         var numbers = [];
         for (var i=50; i <330; i += 10) {
@@ -22,19 +36,31 @@ class BPMView extends React.Component {
         }
         numbers.map( (bpm) =>  {
             selections.push( 
-                <Button key={bpm} value={bpm.toString()} onClick={ () => { this.handleBPMChange(bpm) } }>{bpm.toString()}</Button>
+                <Button 
+                    key={bpm} 
+                    value={bpm.toString()} 
+                    onClick={ () => { this.handleBPMChange(bpm) } }>{bpm.toString()}
+                </Button>
             )
             });
         this.setState({selections:selections});
 
     }
+
     handleBPMChange (bpm) {
         this.setState({selection: bpm})
     }
+
+    playTrack(id) {
+        this.props.checkPlayerInstance( (playerInstance) => {
+            playerInstance.playTrack(id);    
+        });
+    }
+
     render() {
         
         var table = [];
-        var tracksWithBPM = [];       
+        var tracksWithBPM = [];     
         this.props.library.tracks.forEach( (track) => {
             if (track.bpm) { tracksWithBPM.push(track); }
         });
@@ -43,7 +69,9 @@ class BPMView extends React.Component {
             if ( track.bpm > parseInt(this.state.selection) && track.bpm < parseInt(this.state.selection) + 10 ) {
                 table.push(
                    
-                        <Button onClick={() => { this.props.playerInstance.playTrack(track.id)} }>
+                        <Button 
+                            key={track.id} 
+                            onClick={() => { this.playTrack(track.id)}} >
                             {track.bpm} - {track.title} - {track.artist} - {track.album}
                         </Button>
                    
@@ -52,7 +80,9 @@ class BPMView extends React.Component {
             if ( ( track.bpm * 2 )  > parseInt(this.state.selection) && ( track.bpm * 2 ) < parseInt(this.state.selection) + 10 ) {
                 table.push(
                    
-                        <Button onClick={() => { this.props.playerInstance.playTrack(track.id)} }>
+                        <Button 
+                            key={track.id} 
+                            onClick={() => { this.playTrack(track.id)} }>
                             {(track.bpm * 2).toString() + " (orig. "+track.bpm+") "} - {track.title} - {track.artist} - {track.album}
                         </Button>
                    
@@ -61,10 +91,10 @@ class BPMView extends React.Component {
         });
 
             return(
+            
             <div>
                 <div>{this.state.selections}</div>
                 <div>{table}</div>
-
             </div>
         );
     }

@@ -22,7 +22,7 @@
 }
 .main-album-grid {
     margin: 0 auto;
-    width:95%;
+    width:99%;
 }
 .album-title-text {
     position:relative;
@@ -83,11 +83,15 @@
     width:90%;
     margin: 0 auto;
 }
+.album-size-slider {
+    width:50%;
+    margin: 0 auto;
+}
 .MuiDrawer-paperAnchorDockedTop {
     margin-top:90px;
 }
 .spacer {
-    height:120px;
+    height:100px;
     display:block;
     width:100%;
 }
@@ -175,7 +179,8 @@ button.genre-choice, button.search-button {
     float:right;
     transition: 0.2s;
     position:relative;
-    bottom: 70px;
+    bottom: 80px;
+    height:130px;
 }
 .track-info {
     display:inline-block;
@@ -205,11 +210,19 @@ button.genre-choice, button.search-button {
 .btn-icon {
     height:30px;
 }
-.player-selector {
+
+.player-selector, .MuiInputBase-root {
     display:inline-block;
     vertical-align: top;
+    min-width:120px;
+    padding:0px;
+    
 }
+.
 
+.MuiSelect-selectMenu {
+    width:auto !important;  
+}
 .flip-container {
     width:100%;
     height:auto;
@@ -232,9 +245,7 @@ button.genre-choice, button.search-button {
         .player-bar {
             margin-bottom:0px;
         }
-        .main-album-grid {
-            width:98%;
-        }
+     
         .btn-icon {
             height:20px;
         }

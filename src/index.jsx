@@ -90,7 +90,6 @@ class App extends React.Component {
       }
 
     openSelect() {
-    
         this.setState({selectOpen : true});
     }
     closeSelect() {
@@ -110,7 +109,10 @@ class App extends React.Component {
             selectOpen : false        
         });
     }
-    
+
+    addToPlaylist() {
+        
+    }
     checkPlayerInstance(callback) {
 
         if (! this.state.playerInstance) {

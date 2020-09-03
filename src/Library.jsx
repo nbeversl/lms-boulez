@@ -15,6 +15,7 @@ class LMSLibrary {
 
         LMSRequest(["",["genres", "0", "1000"]], (r) => {
             r.result.genres_loop.forEach( (item) => {
+                console.log(item);
                 this.genres[item.genre] = {};
                 this.genres[item.genre].id = item.id;
                 LMSRequest(["" ,["albums", "0","1000","genre_id:"+ item.id.toString(),"tags:ljaS","sort:artflow" ]], 
@@ -36,11 +37,20 @@ class LMSLibrary {
             if (callback) { callback(); }
         });
     }
+    
+    getAllTracksForGenre(id) {
+    
+        LMSRequest(["",["titles","0","10000","genre_id:"+id.toString(), "tags:**t****o****l****i****e****m**"]],(r) => {           
+            r.result.titles_loop.forEach ( (title) => {
+                this.tracks.push(title);
+            });
+        });
+
+    }
 
     getAlbumTracks (albumID, callback) {
 
-        LMSRequest(["",["titles","0","100","album_id:"+albumID, "sort:tracknum", "tags:**t****o****l****i****e**"]],(r) => {           
-
+        LMSRequest(["",["titles","0","500","album_id:"+albumID, "sort:tracknum", "tags:**t****o****l****i****e**"]],(r) => {           
             callback(r.result.titles_loop )
         });
     }
@@ -89,6 +99,13 @@ class LMSLibrary {
         LMSRequest(["",["albums","0","100","artist_id:"+artist_id, "tags:idjtla"]],(r) => {           
             callback(r.result.albums_loop);
         });
+
+    }
+    
+    getPlaylists(callback) {
+        LMSRequest(["",["playlists","0","100", "tags:uplaylist"]], (r) => {
+            console.log(r.result);
+        })
 
     }
 

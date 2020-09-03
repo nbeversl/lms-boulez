@@ -19,35 +19,41 @@ class SearchResults extends React.Component {
             <ServerContext.Consumer> 
                 { ( { playerInstance, library } )  => (
                     <div>
-                        <a href="#tracks">Tracks</a><a href="#artists">Artists/Contributors</a>
+                        go to <a href="#tracks">Tracks</a> | <a href="#artists">Artists/Contributors</a>
                         { this.props.searchResultsAlbums ?
-                            
-                            <AlbumGrid
-                                albumList={this.props.searchResultsAlbums}
-                                screenWidth={this.props.screenWidth}
-                                checkPlayerInstance={this.props.checkPlayerInstance}
-                                >
-                            </AlbumGrid>
+                            <div> Albums
+                                <AlbumGrid
+                                    albumList={this.props.searchResultsAlbums}
+                                    screenWidth={this.props.screenWidth}
+                                    checkPlayerInstance={this.props.checkPlayerInstance}
+                                    >
+                                </AlbumGrid>
+                            </div>
                             :
                             <div>No Albums found</div>
                         }
                         { this.props.searchResultsTracks ?
-                        
-                            <TrackWithSourceAlbum 
-                                tracks={this.props.searchResultsTracks} 
-                                checkPlayerInstance={this.props.checkPlayerInstance}
-                            />
+                            <div> 
+                                <a name="tracks"></a>
+                                <TrackWithSourceAlbum 
+                                    tracks={this.props.searchResultsTracks} 
+                                    checkPlayerInstance={this.props.checkPlayerInstance}
+                                />
+                            </div>
                             :
                             <div>No Tracks Found</div>
                         }   
                         { this.props.searchResultsContributors ? 
 
-                            <ArtistList 
-                                library={library}
-                                artists={this.props.searchResultsContributors} 
-                                checkPlayerInstance={this.props.checkPlayerInstance}
-                            />
+                            <div><a name="artists"></a>
+                                <ArtistList 
+                                    library={library}
+                                    artists={this.props.searchResultsContributors} 
+                                    checkPlayerInstance={this.props.checkPlayerInstance}
+                                />
+                            </div>
                             :
+
                             <div>No Contributors Found</div>
                         } 
                     </div>
