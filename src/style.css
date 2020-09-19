@@ -20,6 +20,10 @@
     z-index:100;
     margin:2em 2em 2em 2em;
 }
+.bpm-track-button{
+    display:block;
+
+}
 .main-album-grid {
     margin: 0 auto;
     width:99%;
@@ -87,6 +91,11 @@
     width:50%;
     margin: 0 auto;
 }
+.album-size-slider .MuiSlider-root {
+    padding:2px 0px 2px 0px;
+    margin-bottom:10px;
+}
+
 .MuiDrawer-paperAnchorDockedTop {
     margin-top:90px;
 }
@@ -156,7 +165,10 @@ button.genre-choice, button.search-button {
     padding-bottom:2px;
 }
 
-
+.slider-volume .MuiSlider-root {
+    padding-top:2px;
+    padding-bottom:2px;
+}
 .now-playing {
     display:block;
 
@@ -216,6 +228,7 @@ button.genre-choice, button.search-button {
     vertical-align: top;
     min-width:120px;
     padding:0px;
+    margin-right:8px;
     
 }
 .

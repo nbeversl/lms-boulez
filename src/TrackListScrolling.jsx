@@ -8,6 +8,11 @@ class TrackListScrolling extends React.Component {
    playTrack(disc, trackNumber) {
         var that = this;
         this.props.checkPlayerInstance( (playerInstance) => {
+            
+            // THAT.PROPS.DISCS is wrong. Has a playlist if al; difference albums
+            console.log("FROM PLAYTRACK")
+            console.log(that.props.discs);
+            console.log(trackNumber);
             playerInstance.playAlbumFromTrackAndContinue(
                 that.props.discs[disc][0], // disc doesn't matter, only passes the album ID 
                 trackNumber)    
@@ -24,6 +29,10 @@ class TrackListScrolling extends React.Component {
         var numDiscs = Object.keys(this.props.discs);
         let List = [];  
         var serverID = 0;
+        
+        console.log('FROM Tracklist Scrolling')
+        console.log(this.props.album.id);
+        console.log(this.props.discs)
         numDiscs.forEach( (disc) => { 
                
                 if ( numDiscs.length > 1 ) {

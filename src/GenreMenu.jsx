@@ -18,9 +18,9 @@ class GenreMenu extends React.Component {
             albumSelected : null,
             albumSelectedID : null,
             view : 'grid',
-            searchResultsAlbums : [],
-            searchResultsTracks : [],
-            searchResultsContributors : [] 
+            searchResultsAlbums : null,
+            searchResultsTracks : null,
+            searchResultsContributors : null 
         }
         this.handleAlbumChange = this.handleAlbumChange.bind(this);
     }
@@ -196,7 +196,7 @@ class Playlist extends React.Component {
     }
     componentDidMount() {
         this.props.library.getPlaylists( (r) => {
-            console.log(r);
+           
         });
     }
     render() {

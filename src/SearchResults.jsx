@@ -5,6 +5,7 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ServerContext from "./ServerContext";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class SearchResults extends React.Component {
 
@@ -20,41 +21,62 @@ class SearchResults extends React.Component {
                 { ( { playerInstance, library } )  => (
                     <div>
                         go to <a href="#tracks">Tracks</a> | <a href="#artists">Artists/Contributors</a>
-                        { this.props.searchResultsAlbums ?
-                            <div> Albums
-                                <AlbumGrid
-                                    albumList={this.props.searchResultsAlbums}
-                                    screenWidth={this.props.screenWidth}
-                                    checkPlayerInstance={this.props.checkPlayerInstance}
-                                    >
-                                </AlbumGrid>
-                            </div>
-                            :
-                            <div>No Albums found</div>
-                        }
-                        { this.props.searchResultsTracks ?
+                        { this.props.searchResultsAlbums != null ?
+                            
                             <div> 
-                                <a name="tracks"></a>
-                                <TrackWithSourceAlbum 
-                                    tracks={this.props.searchResultsTracks} 
-                                    checkPlayerInstance={this.props.checkPlayerInstance}
-                                />
+
+                                { this.props.searchResultsAlbums.length ?    
+                                    <div>
+                                        <h2>Albums</h2>                 
+                                        <AlbumGrid
+                                            albumList={this.props.searchResultsAlbums}
+                                            screenWidth={this.props.screenWidth}
+                                            checkPlayerInstance={this.props.checkPlayerInstance}
+                                            >
+                                        </AlbumGrid>
+                                    </div>
+                                    :
+                                    <div>No Albums found</div>
+                                }   
                             </div>
-                            :
-                            <div>No Tracks Found</div>
+                            :<CircularProgress/>
+                        }
+                        { this.props.searchResultsTracks != null ?
+
+                                <div> 
+                                    <a name="tracks"></a>
+                                    { this.props.searchResultsTracks.length ?
+                                        <div>
+                                            <a href="#tracks"></a><h2>Tracks</h2>
+                                            <TrackWithSourceAlbum 
+                                                tracks={this.props.searchResultsTracks} 
+                                                checkPlayerInstance={this.props.checkPlayerInstance}
+                                            />
+                                        </div>
+                                        :
+                                        <div>No Tracks Found</div>
+                                    }
+                                </div>
+                                :
+                                <CircularProgress/>
                         }   
                         { this.props.searchResultsContributors ? 
 
                             <div><a name="artists"></a>
+                                { this.props.searchResultsContributors.length ?
+                                
                                 <ArtistList 
                                     library={library}
                                     artists={this.props.searchResultsContributors} 
                                     checkPlayerInstance={this.props.checkPlayerInstance}
                                 />
+                                :
+                                <div>No Contributors Found</div>
+
+                                }
                             </div>
                             :
-
-                            <div>No Contributors Found</div>
+                            <CircularProgress/>
                         } 
                     </div>
                 )}
@@ -101,26 +123,40 @@ class ArtistList extends React.Component {
                 <Accordion key={artistID} onChange={() => { this.populateArtist(artistID)} } >
                     <AccordionSummary>{artist.artist}</AccordionSummary>
                     {   this.state.albums[artistID] ?
-                            <AccordionDetails> 
-                                <AlbumGrid 
-                                    albumList={this.state.albums[artistID]}
-                                    checkPlayerInstance={this.props.checkPlayerInstance}
-                                    >
-                                </AlbumGrid>
-                                
-                            </AccordionDetails>
+                        <div>
+                            { this.state.albums[artistID].length ? 
+                                <AccordionDetails> 
+                                    <AlbumGrid 
+                                        albumList={this.state.albums[artistID]}
+                                        checkPlayerInstance={this.props.checkPlayerInstance}
+                                        >
+                                    </AlbumGrid>
+                                    
+                                </AccordionDetails>
+                                :
+                                <div>No Albums Found</div>
+                            }
+                        </div>
                         :
-                        <div>No Albums Found</div>
+                        <CircularProgress/>
                     }
                     { this.state.tracks[artistID] ? 
-                        <TrackWithSourceAlbum 
-                            tracks={this.state.tracks[artistID]} 
-                            checkPlayerInstance={this.props.checkPlayerInstance}
-                    />
-                    :
-                        <div>No Tracks Found</div>
-                    }
 
+                        <div>
+                            {this.state.tracks[artistID].length ? 
+
+                                <TrackWithSourceAlbum 
+                                tracks={this.state.tracks[artistID]} 
+                                checkPlayerInstance={this.props.checkPlayerInstance}
+                                />
+                            :
+                            <div>No Tracks Found</div>
+                            }
+
+                        </div>
+                        :
+                        <CircularProgress/>
+                    }
                 </Accordion>
             );
         });

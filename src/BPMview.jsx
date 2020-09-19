@@ -2,18 +2,28 @@ import * as React from "react";
 import Button from '@material-ui/core/Button';
 import ServerContext from "./ServerContext";
 import { useContext } from 'react';
-
+import { makeStyles } from '@material-ui/core/styles';
 
 function BPMView (props) {
     const globals = useContext(ServerContext);
-
+    const classes = useStyles();
     return <BPMViewNaive 
+                classes={classes}
                 library = {globals.library}
                 checkPlayerInstance={globals.checkPlayerInstance}
                 playerInstance={globals.playerInstance}
             />;
 }
 
+const useStyles = makeStyles({
+    root: {
+        border: 0,
+        borderRadius: 3,
+        height: 30,
+        padding: '0 30px',
+      },
+
+});
 
 class BPMViewNaive extends React.Component {
     constructor(props) {
@@ -68,23 +78,26 @@ class BPMViewNaive extends React.Component {
         tracksWithBPM.sort(compare).forEach( (track)=> {
             if ( track.bpm > parseInt(this.state.selection) && track.bpm < parseInt(this.state.selection) + 10 ) {
                 table.push(
-                   
-                        <Button 
-                            key={track.id} 
-                            onClick={() => { this.playTrack(track.id)}} >
-                            {track.bpm} - {track.title} - {track.artist} - {track.album}
-                        </Button>
-                   
+                        <div className="bpm-track-button">
+                            <Button 
+                                className={this.props.classes.root}
+                                key={track.id} 
+                                onClick={() => { this.playTrack(track.id)}} >
+                                {track.bpm} - {track.title} - {track.artist} - {track.album}
+                            </Button>
+                        </div>
                 );
             }
             if ( ( track.bpm * 2 )  > parseInt(this.state.selection) && ( track.bpm * 2 ) < parseInt(this.state.selection) + 10 ) {
                 table.push(
-                   
+                    <div className="bpm-track-button">
                         <Button 
+                            className={this.props.classes.root}
                             key={track.id} 
                             onClick={() => { this.playTrack(track.id)} }>
                             {(track.bpm * 2).toString() + " (orig. "+track.bpm+") "} - {track.title} - {track.artist} - {track.album}
                         </Button>
+                    </div>  
                    
                 );
             }

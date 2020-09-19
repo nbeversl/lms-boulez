@@ -54,9 +54,9 @@ class Player {
 
         this.playAlbumFromTrackAndContinue = (track, startNumber) => { 
 
-            var albumTitle = track.album;
+            var albumID = track.album_id;
             LMSRequest([this.address,["playlist","clear"]],(r) => {                
-                LMSRequest([this.address,["playlist", "loadalbum",'*', '*', albumTitle]], (r) => {
+                LMSRequest([this.address,["playlist", "addtracks", "album.id="+albumID]], (r) => {
                     LMSRequest([this.address,["playlist", "index",'+'+startNumber.toString()]]);
                 });
             });

@@ -15,7 +15,6 @@ class LMSLibrary {
 
         LMSRequest(["",["genres", "0", "1000"]], (r) => {
             r.result.genres_loop.forEach( (item) => {
-                console.log(item);
                 this.genres[item.genre] = {};
                 this.genres[item.genre].id = item.id;
                 LMSRequest(["" ,["albums", "0","1000","genre_id:"+ item.id.toString(),"tags:ljaS","sort:artflow" ]], 
@@ -59,7 +58,7 @@ class LMSLibrary {
     searchAlbums(searchString, callback) {
 
         LMSRequest(["",["albums","0","100","search:"+searchString, "tags:ljaS"]],(r) => {           
-            callback(r.result.albums_loop);
+            callback(r.result.albums_loop || []);
        });
 
     }
@@ -73,7 +72,7 @@ class LMSLibrary {
     searchTracks(searchString, callback) {
         
         LMSRequest(["",["titles","0","100","search:"+searchString, "tags:id**e****o****t****m****u****a****l****J**"]],(r) => {           
-            callback(r.result.titles_loop);
+            callback(r.result.titles_loop || []);
        });
 
     }
@@ -81,7 +80,7 @@ class LMSLibrary {
     searchContributors(searchString, callback) {
        
         LMSRequest(["",["artists","0","100","search:"+searchString]],(r) => {           
-            callback(r.result.artists_loop);
+            callback(r.result.artists_loop || [] );
         });
 
     }
@@ -104,7 +103,7 @@ class LMSLibrary {
     
     getPlaylists(callback) {
         LMSRequest(["",["playlists","0","100", "tags:uplaylist"]], (r) => {
-            console.log(r.result);
+           
         })
 
     }
