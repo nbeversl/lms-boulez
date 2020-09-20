@@ -8,6 +8,7 @@ class TrackListScrolling extends React.Component {
    playTrack(disc, trackNumber) {
         var that = this;
         this.props.checkPlayerInstance( (playerInstance) => {
+            
             playerInstance.playAlbumFromTrackAndContinue(
                 that.props.discs[disc][0], // disc doesn't matter, only passes the album ID 
                 trackNumber)    
@@ -24,6 +25,7 @@ class TrackListScrolling extends React.Component {
         var numDiscs = Object.keys(this.props.discs);
         let List = [];  
         var serverID = 0;
+        
         numDiscs.forEach( (disc) => { 
                
                 if ( numDiscs.length > 1 ) {
@@ -45,6 +47,7 @@ class TrackListScrolling extends React.Component {
                                     track={track}
                                     trackNumber={trackNumber}
                                     playTrack={this.playTrack.bind(this)}
+                                    addToPlaylist={this.props.addToPlaylist}
                                 />
                         );
                     serverID++;

@@ -35,6 +35,14 @@ class Player {
 
         }
 
+        this.addTrack= (id) => {
+            LMSRequest([this.address,["playlistcontrol", "cmd:add", "track_id:"+id.toString()]]);
+        }
+
+        this.savePlayList = (filename) => {
+            LMSRequest([this.address,["playlistcontrol", "cmd:save", filename]]);
+        }
+
         this.setVolume = (value) => {
             
             LMSRequest([this.address,["mixer","volume", value.toString()]],(r) => { 
@@ -45,10 +53,9 @@ class Player {
 
         this.playAlbumFromTrackAndContinue = (track, startNumber) => { 
 
-            var albumTitle = track.album;
+            var albumID = track.album_id;
             LMSRequest([this.address,["playlist","clear"]],(r) => {                
-                LMSRequest([this.address,["playlist", "loadalbum",'*', '*', albumTitle]], (r) => {
-                    console.log(r);
+                LMSRequest([this.address,["playlist", "addtracks", "album.id="+albumID]], (r) => {
                     LMSRequest([this.address,["playlist", "index",'+'+startNumber.toString()]]);
                 });
             });

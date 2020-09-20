@@ -19,6 +19,9 @@ class TrackWithDetails extends React.Component {
                     onClick={ () => {  console.log( this.props.track.serverID);
                         this.props.playTrack(this.props.disc, this.props.track.serverID) } } >Play
                 </Button>
+                <Button onClick={ this.props.addToPlaylist ? () => { this.props.addToPlaylist(this.props.track.serverID) } :null}>
+                    +
+                </Button>
                 <a href={"/music/"+this.props.track.id+"/download/"}>↓</a>
             </div>
 

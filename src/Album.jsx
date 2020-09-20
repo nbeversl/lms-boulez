@@ -5,6 +5,7 @@ import Zoom from '@material-ui/core/Zoom';
 import TrackListScrolling from './TrackListScrolling'
 import ServerContext from "./ServerContext";
 import { useContext } from 'react';
+import { convertColorToString } from "material-ui/utils/colorManipulator";
 
 function Album (props) {
     const globals = useContext(ServerContext);
@@ -38,18 +39,17 @@ class AlbumKnowingAboutLibrary extends React.Component {
 
         if ( ! this.props.album) {
             this.props.library.getAlbumFromID(this.props.fromAlbumID, (album) => {
-                this.setState({ album:album });
+                this.setState({ album:album });               
             });  
         } else {
             this.setState({ album : this.props.album });
         }       
-        
     }
 
     getMyTracks() {
         
         this.props.library.getAlbumTracks( this.state.album.id, (result) => {
-            console.log(result);
+           
             var discs = {};
             result.forEach( (track) => {
                 var disc = track.disc;
@@ -64,6 +64,7 @@ class AlbumKnowingAboutLibrary extends React.Component {
             this.setState({
                 discs: discs,
             });
+           
             this.setState({flipped : true, modalOpen: true});
         });
     }
@@ -91,7 +92,7 @@ class AlbumKnowingAboutLibrary extends React.Component {
         var backgroundImageStyle = {
             WebkitFilter: 'blur(10px) saturate(2) opacity(.3)',
             filter:'blur(10px) saturate(2) opacity(.3)',
-            //background: this.state.album ? 'url("/music/'+this.state.album.artwork_track_id+'/cover.jpg")' : '',
+            background: this.state.album ? 'url("/music/'+this.state.album.artwork_track_id+'/cover.jpg")' : '',
             background: this.state.album ? 'url("/music/'+this.props.tempArt+'/cover.jpg")' : '',
         }
         var buttonStyle = {
@@ -129,8 +130,9 @@ class AlbumKnowingAboutLibrary extends React.Component {
                                                 <TrackListScrolling      
                                                     playerInstance={playerInstance} 
                                                     discs = {this.state.discs}
-                                                    album = {this.state.id}
+                                                    album = {this.state.album}
                                                     checkPlayerInstance={checkPlayerInstance}
+                                                    addToPlaylist={playerInstance ? playerInstance.addTrack : null}
                                                 />
                                                 <div className={"album-background-image-wrapper"}>
                                                     <div className={"album-background-image"} style={ backgroundImageStyle } />    

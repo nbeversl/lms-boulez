@@ -36,11 +36,20 @@ class LMSLibrary {
             if (callback) { callback(); }
         });
     }
+    
+    getAllTracksForGenre(id) {
+    
+        LMSRequest(["",["titles","0","10000","genre_id:"+id.toString(), "tags:**t****o****l****i****e****m**"]],(r) => {           
+            r.result.titles_loop.forEach ( (title) => {
+                this.tracks.push(title);
+            });
+        });
+
+    }
 
     getAlbumTracks (albumID, callback) {
 
-        LMSRequest(["",["titles","0","100","album_id:"+albumID, "sort:tracknum", "tags:**t****o****l****i****e**"]],(r) => {           
-
+        LMSRequest(["",["titles","0","500","album_id:"+albumID, "sort:tracknum", "tags:**t****o****l****i****e**"]],(r) => {           
             callback(r.result.titles_loop )
         });
     }
@@ -49,7 +58,7 @@ class LMSLibrary {
     searchAlbums(searchString, callback) {
 
         LMSRequest(["",["albums","0","100","search:"+searchString, "tags:ljaS"]],(r) => {           
-            callback(r.result.albums_loop);
+            callback(r.result.albums_loop || []);
        });
 
     }
@@ -63,7 +72,7 @@ class LMSLibrary {
     searchTracks(searchString, callback) {
         
         LMSRequest(["",["titles","0","100","search:"+searchString, "tags:id**e****o****t****m****u****a****l****J**"]],(r) => {           
-            callback(r.result.titles_loop);
+            callback(r.result.titles_loop || []);
        });
 
     }
@@ -71,7 +80,7 @@ class LMSLibrary {
     searchContributors(searchString, callback) {
        
         LMSRequest(["",["artists","0","100","search:"+searchString]],(r) => {           
-            callback(r.result.artists_loop);
+            callback(r.result.artists_loop || [] );
         });
 
     }
@@ -89,6 +98,13 @@ class LMSLibrary {
         LMSRequest(["",["albums","0","100","artist_id:"+artist_id, "tags:idjtla"]],(r) => {           
             callback(r.result.albums_loop);
         });
+
+    }
+    
+    getPlaylists(callback) {
+        LMSRequest(["",["playlists","0","100", "tags:uplaylist"]], (r) => {
+           
+        })
 
     }
 

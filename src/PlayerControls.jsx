@@ -7,6 +7,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import ServerContext from './ServerContext';
 import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+
 
 class PlayerControls extends React.Component {
     
@@ -28,16 +30,14 @@ class PlayerControls extends React.Component {
              
                { ({ serverStatus, playerStatus, playerInstance } )  => (
                         <div className="player-bar">
-                            <div className={"player-selector"}>
-                                <PlayerSelector 
-                                    open={this.props.selectOpen}
-                                    players={serverStatus.players_loop} 
-                                    selectedPlayer={this.props.targetPlayer}
-                                    onSelect={this.props.switchPlayer}
-                                    openSelect={this.props.openSelect}
-                                    closeSelect={this.props.closeSelect}
-                                />
-                            </div>
+                            <PlayerSelector 
+                                open={this.props.selectOpen}
+                                players={serverStatus.players_loop} 
+                                selectedPlayer={this.props.targetPlayer}
+                                onSelect={this.props.switchPlayer}
+                                openSelect={this.props.openSelect}
+                                closeSelect={this.props.closeSelect}
+                            />
                         { playerInstance ? 
                             <div className="player-controls">
                                 <Button className="player-control-button" onClick={playerInstance ? playerInstance.pause : null}> 
@@ -60,9 +60,8 @@ class PlayerControls extends React.Component {
                                     <img className={"btn-icon"} src={"./html/settings.png"} />
                                 </Button>
                                 
-                            
                                 <Button onClick={this.toggleNowPlaying.bind(this)}>
-                                N
+                                Now Playing
                                 </Button>
                             </div>
                            
@@ -106,17 +105,17 @@ class PlayerSelector extends React.Component {
              </MenuItem>
             );
         return (
-          <div>
+          <div className="player-selector">
               <FormControl variant="outlined">
-                <InputLabel id="demo-simple-select-disabled-label">Player</InputLabel>
+                <InputLabel id="player-selector-label">Player</InputLabel>
                     <Select
+                        labelId="player-selector-label"
                         open={this.props.open}
-                        className="player-selector"
                         label="Player"
                         onOpen={this.props.openSelect}
                         onClose={this.props.closeSelect}
                         onChange={(e) => this.props.onSelect(e)}
-                        value={this.props.selectedPlayer || ""}>
+                        value={this.props.selectedPlayer || ''}>
                         {Players}
                     </Select>
             </FormControl>

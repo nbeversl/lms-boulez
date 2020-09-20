@@ -10,8 +10,42 @@ import { BrowserPlayer } from './BrowserPlayer';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import NowPlaying from './NowPlaying';
 import ServerContext from './ServerContext';
+import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 
-class App extends React.Component {
+const theme = createMuiTheme({
+    typography: {
+        fontFamily: [
+            //'-apple-system',
+            // 'BlinkMacSystemFont',
+            // '"Segoe UI"',
+            // 'Roboto',
+            // '"Helvetica Neue"',
+            'Arial',
+            'sans-serif',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+        ].join(','),
+    overrides : {
+        MuiButton : {
+            '@global' : {
+                fontFamily:"Times New Roman",
+            }
+        }
+    }
+    }
+});
+
+
+function App() {
+    return (
+      <ThemeProvider theme={theme}>
+        <MediaCenter />
+      </ThemeProvider>
+    );
+  }
+
+class MediaCenter extends React.Component {
     
     constructor(props) {
         super(props);
@@ -90,7 +124,6 @@ class App extends React.Component {
       }
 
     openSelect() {
-    
         this.setState({selectOpen : true});
     }
     closeSelect() {
@@ -110,7 +143,10 @@ class App extends React.Component {
             selectOpen : false        
         });
     }
-    
+
+    addToPlaylist() {
+        
+    }
     checkPlayerInstance(callback) {
 
         if (! this.state.playerInstance) {
@@ -150,7 +186,7 @@ class App extends React.Component {
         }
         return (
             <ServerContext.Provider value={globals}>
-                <div>
+                <div className="main">
                     <meta name="viewport" content="width=device-width,initial-scale=1"></meta>
                         { this.state.serverStatus && this.state.library ?
                             <div>
@@ -195,6 +231,7 @@ class App extends React.Component {
         );
     }
 }
+
 render ( 
     <App />,
     document.getElementById('target')
