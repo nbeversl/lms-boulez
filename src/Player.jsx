@@ -37,7 +37,6 @@ class Player {
 
         this.addTrack= (id) => {
             LMSRequest([this.address,["playlistcontrol", "cmd:add", "track_id:"+id.toString()]]);
-            console.log('ADDED TRACK '+id.toString());
         }
 
         this.savePlayList = (filename) => {
